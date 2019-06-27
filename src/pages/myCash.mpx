@@ -1,0 +1,79 @@
+<template>
+  <view class="cashPage">
+    <!-- 提现金额 -->
+    <view class="take">
+      <view class="can">可提现金额:<text style="color:#FF6B79;">312.8元</text></view>
+      <view class="inputBox">
+        <view>￥</view>
+        <view>
+          <input type="text" placeholder="请输入提现金额" style="width:334rpx;">
+        </view>
+        <view style="color:#FF8E1F;">全部</view>
+      </view>
+    </view> 
+    <!-- 提现按钮 -->
+    <button style="background:#FF6B79;font-size:40rpx;border-radius:48rpx;color:white;margin-bottom:47rpx;">提现</button>
+    <!-- 提示 -->
+    <view class="remain">提示:该提现会将你提现的额金额提现登录的支付宝,请在微信-钱包中查收</view>
+  </view>
+</template>
+
+<script>
+  import { createPage } from '@mpxjs/core'
+
+  createPage({
+    onLoad () {}
+  })
+</script>
+<style lang="less" scoped>
+  .cashPage{
+    width: 750rpx;
+    height: 1206rpx;
+    padding: 23rpx 32rpx;
+    background: white;
+    .take{
+      width:686rpx;
+      height:320rpx;
+      background:rgba(255,255,255,1);
+      box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
+      border-radius:21rpx;
+      padding:78rpx 32rpx;
+      font-size: 48rpx;
+      margin-bottom: 81rpx;
+      .can{
+        margin-bottom: 69rpx;
+      }
+      .inputBox{
+        display: flex;
+        align-items: center;
+        view{
+          &:nth-of-type(1){
+            margin-right: 9rpx;
+          }
+        }
+        input{
+          margin-right: 144rpx;
+        }
+      }
+    }
+    .remain{
+      width:685rpx;
+      height:102rpx;
+      font-size:38rpx;
+      font-family:PingFangSC-Medium;
+      font-weight:500;
+      color:rgba(102,102,102,1);
+      line-height:60rpx;
+    }
+  }
+</style>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+    },
+    "navigationBarTitleText": "提现",
+    "navigationBarBackgroundColor":"#FF6B79",
+    "navigationBarTextStyle":"white"
+  }
+</script>

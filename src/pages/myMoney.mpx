@@ -1,0 +1,128 @@
+<template>
+  <view class="myMoney">
+    <!-- 体现金额部分 -->
+    <view class="money">
+      <!-- 左边 -->
+      <view class="text">
+        <view class="have">佣金总额:<text style="color:#FF8E1F;">312.8元</text></view>
+        <view class="had">可提现总额:<text style="color:#FF6B79;">312.8元</text></view>
+        <view class="all">已提现总额:<text>1202元</text></view>
+      </view>
+      <!-- 右边 -->
+      <view class="cashButton">提现</view>
+    </view>
+    <!-- 详细部分 -->
+    <view class="content">
+      <view class="info"  wx:for="{{2}}" wx:key="{{index}}">
+        <!-- 头像 -->
+        <image src="../images/icon_money.png"></image>
+        <view class="text">
+          <view>九*</view>
+          <view>ID:12**23</view>
+          <view>联系电话:159****9023</view>
+          <view>注册时间:2019-5-29</view>
+          <view>消费金额:1元</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import { createPage } from '@mpxjs/core'
+
+  createPage({
+    onLoad () {}
+  })
+</script>
+<style lang="less" scoped>
+  .myMoney{
+    width: 750rpx;
+    background: white;
+    padding: 23rpx 32rpx;
+    .money{
+      box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
+      width: 686rpx;
+      height: 276rpx;
+      padding: 37rpx 32rpx;
+      display: flex;
+      font-size: 48rpx;
+      border-radius: 21rpx;
+      .text{
+        display: flex;
+        flex-direction: column;
+        margin-right: 86rpx;
+      }
+      .cashButton{
+        flex:1;
+        width: 120rpx;
+        height: 120rpx;
+        line-height: 120rpx;
+        text-align: center;
+        font-size: 48rpx;
+        background: #FF6B79;
+        margin-top:30rpx;
+        color:white;
+        border-radius: 50%;
+      }
+    }
+    .content{
+      .info{
+        box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
+        padding: 40rpx 32rpx;
+        width: 686rpx;
+        margin: 23rpx auto;
+        border-radius: 24rpx;
+        display: flex;
+         image{
+          width: 120rpx;
+          height: 120rpx;
+          border-radius: 50%;
+          margin-right: 16rpx;
+        }
+        .text{
+          flex:1;
+          font-size: 40rpx;
+          view{
+            &:nth-of-type(1){
+              color:black;
+              font-weight: Semibold;
+              margin-top: 8rpx;
+              margin-bottom: 20rpx;
+            }
+            &:nth-of-type(2){
+              color:#666666;
+              font-weight: Semibold;
+              margin-bottom: 35rpx;
+            }
+            &:nth-of-type(3){
+              color:black;
+              font-weight: Semibold;
+              margin-bottom: 20rpx;
+            }
+            &:nth-of-type(4){
+              color:black;
+              font-weight: Semibold;
+              margin-bottom: 20rpx;
+            }
+            &:nth-of-type(5){
+              color:#FF8E1F;
+              font-weight: Semibold;
+            }
+          }
+        }
+      }
+     
+    }
+  }
+</style>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+    },
+    "navigationBarTitleText": "我的佣金",
+    "navigationBarBackgroundColor":"#FF6B79",
+    "navigationBarTextStyle":"white"
+  }
+</script>

@@ -1,0 +1,319 @@
+<template>
+  <view class="imformate">
+    <form bindsubmit="formSubmit">  
+      <!-- <view class="name">
+        <view>姓名<text style="color:#FF6B79;">*</text></view>
+        <input type="text" placeholder="请输入姓名">
+      </view>    
+      <view class="sex">
+        <view>性别<text style="color:#FF6B79;">*</text></view>
+        <input type="text">
+      </view>        -->
+      <!-- 姓名 -->
+      <view class="cu-form-group">
+        <view class="title">姓名<text style="color:#FF6B79;">*</text></view>
+        <input placeholder="请输入姓名" placeholder-style="text-align:right;" name='name' />
+      </view>
+      <!-- 性别 -->
+      <view class="cu-form-group">
+        <view class="title">性别<text style="color:#FF6B79;">*</text></view>
+        <picker bindchange="PickerChangeSex" value="{{sexIndex}}" range="{{sex}}">
+          <view class="picker" style="color:black;">
+            {{sexIndex?sex[sexIndex]:'男'}}
+          </view>
+        </picker>
+      </view>
+      <!-- 生日日期 -->
+      <view class="cu-form-group">
+        <view class="title">生日<text style="color:#FF6B79;">*</text></view>
+        <picker mode="date" value="{{date}}" start="2015-09-01" end="2020-09-01" bindchange="DateChange">
+          <view class="picker">
+            {{date}}
+          </view>
+        </picker>
+      </view>
+      <!-- 身份证号 -->
+      <view class="cu-form-group">
+        <view class="title">身份证号</view>
+        <input placeholder="请填写(如:420...)" placeholder-style="text-align:right;"/>
+      </view>
+      <!-- 手机号码 -->
+      <view class="cu-form-group" style="margin-top:16rpx;">
+        <view class="title">电话<text style="color:#FF6B79;">*</text></view>
+        <input placeholder="请填写(如:135...)" placeholder-style="text-align:right;"
+        name='phone' /> 
+        <!-- <view class="cu-capsule radius">
+          <view class="cu-tag bg-blue">
+            +86
+          </view>
+          <view class="cu-tag line-blue">
+            中国大陆
+          </view>
+        </view> -->
+      </view>
+      <!-- 微信号码 -->
+      <view class="cu-form-group">
+        <view class="title">微信号</view>
+        <input placeholder="输填写(如:153...)" placeholder-style="text-align:right;"/>
+      </view>
+      <!-- QQ号 -->
+      <view class="cu-form-group">
+        <view class="title">QQ号</view>
+        <input placeholder="输填写(如:232...)" placeholder-style="text-align:right;"/>
+      </view>
+      <!-- 月收入 -->
+      <view class="cu-form-group" style="margin-top:16rpx;">
+        <view class="title">月收入</view>
+        <picker bindchange="PickerChangeMon" value="{{index}}" range="{{picker}}">
+          <view class="picker">
+            {{index?picker[index]:'请选择收入'}}
+          </view>
+        </picker>
+      </view>
+       <!-- 身高 -->
+      <view class="cu-form-group">
+        <view class="title">身高</view>
+        <input placeholder="请填写(如:172)" placeholder-style="text-align:right;"/>
+      </view>
+      <!-- 学历 -->
+      <view class="cu-form-group" style="margin-bottom:43rpx;">
+        <view class="title">学历<text style="color:#FF6B79;">*</text></view>
+        <picker bindchange="PickerChange" value="{{studyIndex}}" range="{{study}}">
+          <view class="picker" style="color:black;">
+            {{studyIndex?study[studyIndex]:'请选择学历'}}
+          </view>
+        </picker>
+      </view>
+      <!-- 保存发布按钮 -->
+      <button type="default"
+          size="{{defaultSize}}"
+          loading="{{loading}}"
+          plain="{{plain}}"
+          formType="submit"
+          hover-class="other-button-hover" class="btn">
+      保存
+          </button>
+    </form>
+  </view>
+</template>
+
+<script>
+  import { createPage } from '@mpxjs/core'
+  import WxValidate from "../api/checkForm.js"; 
+  createPage({
+    data: {
+      index: null,
+      sexIndex:null,
+      studyIndex:null,
+      sex:['男','女'],
+      study:['小学','初中','高中','大专','本科','硕士','博士'],
+      picker: ['1500以下', '1500-2499', '2500-3499', '3500-4499', '4500-5999', '6000-7999', '8000-9999', '10000-14999', '15000-19999', '20000-29999', '30000-49999','50000-69999','70000-89999','90000-99999','100000及以上'],
+      multiIndex: [0, 0, 0],
+      time: '12:01',
+      date: '请选择生日',
+      region: ['广东省', '广州市', '海珠区'],
+      imgList: [],
+      modalName: null,
+      textareaAValue: '',
+      textareaBValue: ''
+    },
+    onLoad () {
+      this.initValidate()
+    },
+    methods: {
+       //报错 
+      showModal(error) {
+        let  _this = this;
+        wx.showModal({
+          content: error.msg,
+          showCancel: false,
+          success(res) {
+              if (res.confirm) {
+                  // console.log('用户点击确定')
+                  if(_this.isJump){
+                      wx.navigateBack({
+                          delta: 1
+                      })
+                  }
+              }
+          }
+        })
+      },
+      // 验证函数
+      initValidate() {
+          const rules = {
+              name: {
+                  required: true,
+                  // minlength:1
+                  rangelength:[1,10]
+              },
+              // wx: {
+              //     required: true,
+              // },
+              // qq: {
+              //     required: true,
+              //     digits:true,
+              //     rangelength:[5,10]
+              // },
+              company: {
+              },
+              post: {
+              },
+              phone: {
+                  required: true,
+                  tel: true
+              }
+          }
+          const messages = {
+              name: {
+                  required: '请填写姓名',
+                  rangelength:'请输入正确的名称,1到10位'
+              },
+              wx: {
+                  required: '请填写微信号'
+              },
+              qq: {
+                  required: '请填写QQ号',
+                  rangelength:'请输入正确的QQ号',
+                  digits:"qq号只能由数字组成"
+              },
+              company: {
+              },
+              post: {
+              },
+              phone: {
+                  required: '请输入11位手机号码',
+                  tel: '请输入正确的手机号码'
+              }
+          
+          }
+          this.WxValidate = new WxValidate(rules, messages)
+      },
+      //调用验证函数
+      formSubmit(e) {
+          // console.log('form发生了submit事件，携带的数据为：', e.detail.value)
+          const params = e.detail.value
+          //校验表单
+          if (!this.WxValidate.checkForm(params)) {
+              const error = this.WxValidate.errorList[0]
+              this.showModal(error)
+              return false
+          }else{
+              // console.log(this.isJump)
+              this.showModal({
+                  msg: '提交成功',
+              })
+          } 
+      },
+      // 改变日期
+      DateChange(e) {
+        this.date = e.detail.value
+      },
+      PickerChangeSex(e) {
+        this.sexIndex = e.detail.value
+      },
+      PickerChangeMon(e) {
+        this.index = e.detail.value
+      },
+      PickerChange(e) {
+        this.studyIndex = e.detail.value
+      },
+      MultiChange(e) {
+        this.multiIndex = e.detail.value
+      },
+      MultiColumnChange(e) {
+        let data = {
+          multiArray: this.multiArray,
+          multiIndex: this.multiIndex
+        };
+        data.multiIndex[e.detail.column] = e.detail.value;
+        switch (e.detail.column) {
+          case 0:
+            switch (data.multiIndex[0]) {
+              case 0:
+                data.multiArray[1] = ['扁性动物', '线形动物', '环节动物', '软体动物', '节肢动物'];
+                data.multiArray[2] = ['猪肉绦虫', '吸血虫'];
+                break;
+              case 1:
+                data.multiArray[1] = ['鱼', '两栖动物', '爬行动物'];
+                data.multiArray[2] = ['鲫鱼', '带鱼'];
+                break;
+            }
+            data.multiIndex[1] = 0;
+            data.multiIndex[2] = 0;
+            break;
+          case 1:
+            switch (data.multiIndex[0]) {
+              case 0:
+                switch (data.multiIndex[1]) {
+                  case 0:
+                    data.multiArray[2] = ['猪肉绦虫', '吸血虫'];
+                    break;
+                  case 1:
+                    data.multiArray[2] = ['蛔虫'];
+                    break;
+                  case 2:
+                    data.multiArray[2] = ['蚂蚁', '蚂蟥'];
+                    break;
+                  case 3:
+                    data.multiArray[2] = ['河蚌', '蜗牛', '蛞蝓'];
+                    break;
+                  case 4:
+                    data.multiArray[2] = ['昆虫', '甲壳动物', '蛛形动物', '多足动物'];
+                    break;
+                }
+                break;
+              case 1:
+                switch (data.multiIndex[1]) {
+                  case 0:
+                    data.multiArray[2] = ['鲫鱼', '带鱼'];
+                    break;
+                  case 1:
+                    data.multiArray[2] = ['青蛙', '娃娃鱼'];
+                    break;
+                  case 2:
+                    data.multiArray[2] = ['蜥蜴', '龟', '壁虎'];
+                    break;
+                }
+                break;
+            }
+            data.multiIndex[2] = 0;
+            break;
+        }
+        // this.setData(data);
+      },
+      TimeChange(e) {
+        this.time = e.detail.value
+        // this.setData({
+        //   time: e.detail.value
+        // })
+      }
+    }
+  })
+</script>
+<style lang="less" scoped>
+ .imformate{
+   padding-top: 16rpx;
+   font-size:40px;
+   font-family:PingFangSC-Semibold;
+   font-weight: 600;
+   color:#333333;
+   .btn{
+      width:686rpx;
+      height:96rpx;
+      background:rgba(255,107,121,1);
+      border-radius:48rpx;
+      color:white;
+   }
+ }
+</style>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+    },
+    "navigationBarTitleText": "详细资料",
+    "navigationBarBackgroundColor":"#FF6B79",
+    "navigationBarTextStyle":"white"
+  }
+</script>

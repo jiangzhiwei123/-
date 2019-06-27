@@ -1,0 +1,72 @@
+<template>
+  <view class="retail">
+    <!-- 分销金额 -->
+   <view class="title">分销佣金总额:30元</view>
+   <view wx:for="{{2}}" wx:key="{{index}}" class="content">
+     <view>分销人员姓名:王**</view>
+     <view>分销人员电话:159****9023</view>
+     <view>客户消费时间:2019-5-29</view>
+     <view>消费类型:年会员</view>
+     <view class="bottom">
+       <view style="color:#FF8E1F;">消费金额:1元</view>
+       <view style="color:#FF6B79;">佣金:0.1元</view>
+     </view>
+   </view>
+  </view>
+</template>
+
+<script>
+  import { createPage } from '@mpxjs/core'
+
+  createPage({
+    onLoad () {}
+  })
+</script>
+<style lang="less" scoped>
+  .retail{
+    width:750rpx;
+    height: 1180rpx;
+    background: white;
+    padding: 23rpx 32rpx;
+    .title{
+      width:686rpx;
+      height:120rpx;
+      padding: 37rpx 32rpx;
+      font-size: 48rpx;
+      color:#FF6B79;
+      background:rgba(255,255,255,1);
+      box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
+      border-radius:21rpx;
+    }
+    .content{
+      width:686rpx;
+      height:386rpx;
+      padding:39rpx 32rpx;
+      margin-top: 23rpx;
+      background:rgba(255,255,255,1);
+      box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
+      border-radius:21rpx;
+      font-size: 40rpx;
+      color:black;
+      font-weight: Semibold;
+      font-family:PingFangSC-Semibold;
+      view{
+        margin-bottom: 16rpx;
+      }
+      .bottom{
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+</style>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+    },
+    "navigationBarTitleText": "提现",
+    "navigationBarBackgroundColor":"#FF6B79",
+    "navigationBarTextStyle":"white"
+  }
+</script>
