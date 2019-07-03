@@ -1,0 +1,233 @@
+<template>
+  <view class="custom">
+    <!-- title部分 -->
+    <view class="title">
+      <view class="{{current==1?'on':''}}" data-index="1" bindtap="click" style="margin-left:156rpx;margin-right:138rpx;">家长客户</view>
+      <view class="{{current==2?'on':''}}" data-index="2" bindtap="click">会员客户</view>
+    </view>
+    <!-- 主题内容部分 -->
+    <view class="content">
+      <!-- 头部 -->
+      <view class="header">
+        <image src="../images/icon_front.png" style="width:40rpx;height:40rpx;"></image>
+        <view class="text">2019年</view>
+        <image src="../images/icon_behind.png" style="width:40rpx;height:40rpx;"></image>
+      </view>
+      <!-- 主体部分 -->
+      <view class="body">
+        <view class="month" id="{{monthCurrent==index?'active':''}}" wx:for="{{12}}" wx:key="{{index}}" bindtap="change" data-num="{{index}}">
+          <view class="number" id="{{monthCurrent==index?'white':''}}"><text id="{{monthCurrent==index?'white11':''}}">5</text>人</view>
+          <view class="mon" id="{{monthCurrent==index?'white22':''}}">{{index+1}}月</view>
+        </view>
+      </view>
+    </view>
+    <!-- 邀请更多客户部分按钮 -->
+    <button class="btn" bindtap="showMeng">邀请更多客户</button>
+    <!-- 蒙层部分 -->
+    <view class="meng {{isShow?'show':'hide'}}" >
+      <!-- 分享的内容 -->
+      <view class="bottom">
+        <view class="top">
+          <view class="first">
+            <image src="../images/icon_lailaihunlian.png"></image>
+            <view>莱莱婚恋</view>
+          </view>
+          <view class="second">
+            <image src="../images/icon_lialiajiazhang.png"></image>
+            <view>莱莱家长</view>
+          </view>
+        </view>
+        <view class="bot" bindtap="del">
+          取消
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import { createPage } from '@mpxjs/core'
+
+  createPage({
+    data:{
+      current:1,
+      monthCurrent:Number,
+      isShow:false
+    },
+    methods: {
+      change(e){
+        console.log(e)
+        this.monthCurrent=e.currentTarget.dataset.num
+      },
+      click(e){
+        console.log(e)
+        this.current = e.currentTarget.dataset.index
+      },
+      showMeng(){
+        this.isShow=true
+      },
+      del(){
+        this.isShow=false
+      }
+    },
+    onLoad () {}
+  })
+</script>
+<style lang="less" scoped>
+#white11,#white,#white22{
+  color:white;
+  border-radius:16rpx;
+}
+.show{
+  display: block;
+}
+.hide{
+  display: none;
+}
+  .custom{
+    background: white;
+    padding-bottom: 212rpx;
+    // 蒙层
+    .meng{
+      position: fixed;
+      top:0;
+      left:0;
+      width:750rpx;
+      height:1206rpx;
+      background:rgba(0,0,0,0.2);
+      // opacity:0.2;
+      .bottom{
+        position: fixed;
+        bottom:0;
+        left:0;
+        height: 376rpx;
+        width: 750rpx;
+          .top{
+          background: white;
+          display: flex;
+          padding-top: 72rpx;
+          font-size:36rpx;
+          font-family:PingFangSC-Semibold;
+          font-weight:600;
+          color:rgba(51,51,51,1);
+          justify-content: space-around;
+          padding-bottom: 34rpx;
+          .first{
+            // margin-left: 128rpx;
+            // margin-right: 255rpx;
+          }
+          image{
+            width: 120rpx;
+            height: 120rpx;
+            border-radius: 50%;
+          }
+       }
+       .bot{
+            height:98rpx;
+            line-height: 98rpx;
+            text-align: center;
+            font-size:36rpx;
+            font-family:PingFangSC-Semibold;
+            font-weight:600;
+            color:rgba(102,102,102,1);
+            background:rgba(240,240,240,1);
+          }
+      }
+      
+    }
+    .btn{
+      width:417rpx;
+      height:98rpx;
+      color:white;
+      background:rgba(255,107,121,1);
+      border-radius:10rpx;
+      margin:auto;
+    }
+    .title{
+      display: flex;
+      height: 88rpx;
+      line-height: 88rpx;
+      border-bottom:1rpx solid rgba(227,227,230,1);
+      font-size:40rpx;
+      font-family:PingFangSC-Medium;
+      font-weight:600;
+      color:rgba(153,153,153,1);
+      .on{
+        color:rgba(255,107,121,1);
+      }
+    }
+    .content{
+      // padding:32rpx 36rpx;
+      margin: 32rpx auto 160rpx;;
+      width: 678rpx;
+      background:rgba(255,255,255,1);
+      box-shadow:0px 2rpx 18rpx 6rpx rgba(215,215,219,0.71);
+      border-radius:10rpx 10rpx 0rpx 0rpx;
+      .header{
+        height:97rpx;
+        line-height: 97rpx;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background:rgba(255,107,121,1);
+        border-radius:10rpx 10rpx 0px 0px;
+        .text{
+          font-size:48rpx;
+          font-family:FFDINPro-Medium;
+          font-weight:500;
+          color:rgba(255,254,254,1);
+        }
+      }
+      .body{
+        // padding: 20rpx;
+        display: flex;
+        flex-wrap: wrap;
+        #active{
+            background:#FF6B79;
+            // color:white;
+          }
+        .month{
+          background: url("../images/框.png") 0 0 no-repeat;
+          background-size: 100% 100%;
+          width: 144rpx;
+          height: 144rpx;
+          margin:14rpx;
+          padding:16rpx 16rpx 12rpx 16rpx;
+          
+          .number{
+            font-size:24rpx;
+            font-family:PingFangSC-Semibold;
+            font-weight:600;
+            color:rgba(0,0,0,1);
+            .on{
+              color:white;
+            }
+            text{
+              font-size:44rpx;
+              font-family:FFDINPro-Medium;
+              font-weight:500;
+              color:rgba(255,142,31,1);
+            } 
+          }
+          .mon{
+            text-align: right;
+            font-size:44rpx;
+            font-family:PingFangSC-Semibold;
+            font-weight:600;
+            color:rgba(102,102,102,1);
+          }
+        }
+      }
+    }
+  }
+</style>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+    },
+    "navigationBarTitleText": "我的客户",
+    "navigationBarBackgroundColor":"#FF6B79",
+    "navigationBarTextStyle":"white"
+  }
+</script>

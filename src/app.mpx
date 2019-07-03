@@ -1,7 +1,11 @@
 <script>
   import { createApp } from '@mpxjs/core'
   createApp({
-    
+    onLaunch(){
+      // wx.redirectTo({
+      //   url: './pages/login'
+      // })
+    }
   })
 </script>
 
@@ -14,7 +18,7 @@
   {
     "pages": [
       "./pages/index",
-      "./pages/person",
+      "./pages/agree",
       "./pages/register",
       "./pages/login",
       "./pages/myMoney",
@@ -22,7 +26,8 @@
       "./pages/retail",
       "./pages/cashDetail",
       "./pages/baseInfo",
-      "./pages/informate"
+      "./pages/informate",
+      "./pages/myCustom"
     ],
      "window": {
       "navigationBarBackgroundColor": "#ffffff",

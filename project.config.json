@@ -1,11 +1,10 @@
 {
-	"miniprogramRoot": "dist/",
 	"compileType": "miniprogram",
 	"setting": {
 		"urlCheck": false,
 		"es6": false,
 		"enhance": false,
-		"postcss": true,
+		"postcss": false,
 		"minified": false,
 		"newFeature": true,
 		"coverView": true,
@@ -41,7 +40,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 6,
+			"current": 8,
 			"list": [
 				{
 					"id": -1,
@@ -89,6 +88,20 @@
 					"id": -1,
 					"name": "详细资料",
 					"pathName": "pages/informate",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "我的客户",
+					"pathName": "pages/myCustom",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "基本资料",
+					"pathName": "pages/baseInfo",
 					"scene": null
 				}
 			]

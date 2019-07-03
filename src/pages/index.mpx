@@ -1,14 +1,19 @@
 <template>
   <view class="indexPage">
     <!-- banner部分 -->
-    <view class="bgPic"></view>
+    <view class="bgPic" style="padding-top:50rpx;text-align:center;">
+      <view class="con">
+        <image src="{{cashList.authInfo.imageInfos[0].imageUrl}}" style="width:136rpx;height:136rpx;border-radius:50%;"></image>
+        <view class="name">{{cashList.nickName}}</view>
+      </view>
+    </view>
     <!-- 客户资金 -->
     <view class="money">
-      <view class="myCustom">
+      <view class="myCustom" bindtap="jumpMyCustom">
         <view>我的客户</view>
         <view>28<text>人</text></view>
       </view>
-      <view class="myMoney">
+      <view class="myMoney" bindtap="jumpMyMoney">
         <view>我的佣金</view>
         <view>311.81<text>元</text></view>
       </view>
@@ -16,12 +21,40 @@
     <!-- 路由跳转部分 -->
     <view class="content">
       <view class="firstJump">
-        <view class="jumpMoney">
-          <image src="../images/icon_money.png" style="width:56rpx;height:56rpx;"></image>
-          <view>佣金</view>
-          <image src="../images/icon_more.png"></image>
+        <!-- 佣金跳转 -->
+        <view class="jumpMoney" bindtap="jumpRetail">
+          <image src="../images/icon_money.png" style="width:56rpx;height:56rpx;margin-top:6rpx;"></image>
+          <view class="right">
+            <view class="text">佣金</view>
+            <image src="../images/icon_more.png" style="width:32rpx;height:32rpx;"></image>
+          </view>
         </view>
-        <view class="jumpCase"></view>
+        <!-- 提现明细 -->
+        <view class="jumpMoney" bindtap="jumpCashDetail">
+          <image src="../images/icon_deposit.png" style="width:56rpx;height:56rpx;margin-top:6rpx;"></image>
+          <view class="right" style="border:none;">
+            <view class="text">提现明细</view>
+            <image src="../images/icon_more.png" style="width:32rpx;height:32rpx;"></image>
+          </view>
+        </view>
+      </view>
+      <view class="firstJump">
+        <!-- 团队人员 -->
+        <view class="jumpMoney" bindtap="jumpTeam">
+          <image src="../images/icon_team.png" style="width:56rpx;height:56rpx;margin-top:6rpx;"></image>
+          <view class="right">
+            <view class="text">团队人员</view>
+            <image src="../images/icon_more.png" style="width:32rpx;height:32rpx;"></image>
+          </view>
+        </view>
+        <!-- 线下推荐 -->
+        <view class="jumpMoney">
+          <image src="../images/icon_recommend.png" style="width:56rpx;height:56rpx;margin-top:6rpx;"></image>
+          <view class="right" style="border:none;">
+            <view class="text">线下推荐</view>
+            <image src="../images/icon_more.png" style="width:32rpx;height:32rpx;"></image>
+          </view>
+        </view>
       </view>
       <view class="secondJump">
         <view class="jumpTeam"></view>
@@ -38,24 +71,63 @@
 
 <script>
   import { createPage } from '@mpxjs/core'
+  import store from '../store/general'
 
   createPage({
     data:{
       current:1
     },
+    computed: {
+      ...store.mapState(['cashList']),
+    },
     methods: {
+      ...store.mapActions(['getInformation']),
+      // 点击下面图标部分
       click(e){
         this.current = e.currentTarget.dataset.tarcur
         console.log(this.current)
         if(this.current==2){
           wx.navigateTo({
-            url: './person',
+            url: './baseInfo',
             success: (result)=>{
               console.log("哈哈哈哈")
             }
           })
         }
+      },
+      // 点击我的客户部分跳转
+      jumpMyCustom(){
+        wx.navigateTo({
+          url: './myCustom'
+        })
+      },
+      // 跳转到我的佣金
+      jumpMyMoney(){
+        wx.navigateTo({
+          url: './myMoney'
+        })
+      },
+      // 跳转到分销佣金
+      jumpRetail(){
+        wx.navigateTo({
+          url: './retail'
+        })
+      },
+      // 跳转到提现明细
+      jumpCashDetail(){
+        wx.navigateTo({
+          url: './cashDetail'
+        })
+      },
+      // 跳转到团队页面
+      jumpTeam(){
+        wx.navigateTo({
+          url: './informate'
+        })
       }
+    },
+    onLoad(){
+      this.getInformation()
     },
     onshow () {
       this.current = 1
@@ -66,12 +138,22 @@
 <style lang="less" scoped>
   .indexPage{
     background: white;
+    font-family:PingFangSC;
+    padding-bottom: 150rpx;
     .bgPic{
       background: url("../images/icon_client_bj.png") 0 0 no-repeat;
       width: 750rpx;
       height: 394rpx;
       background-size: 100% 100%;
       margin-bottom: -126rpx;
+      .con{
+        .name{
+          font-size:32rpx;
+          font-family:PingFangSC-Medium;
+          font-weight:500;
+          color:white;
+        }
+      }
     }
     .money{
       background: url("../images/矩形 12.png") 0 0 no-repeat;
@@ -119,14 +201,38 @@
     }
     .content{
       .firstJump{
-        background: url("../images/矩形 12.png") 0 0 no-repeat;
-        width: 707rpx;
-        height: 273rpx;
-        margin:0 auto;
-        background-size: 100% 100%;
-        // .jumpMoney{
-
-        // }
+        width:678rpx;
+        height:225rpx;
+        background:rgba(255,255,255,1);
+        box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
+        border-radius:21rpx;
+        margin:36rpx auto;
+        padding: 25rpx 24rpx;
+        .jumpMoney{
+          display: flex;
+          align-items: flex-start;
+          // margin-bottom: 29rpx;
+          height: 112rpx;
+           .right{
+              flex:1;
+              display: flex;
+              align-items: center;
+              margin-left: 25rpx;
+              padding-bottom: 33rpx;
+              border-bottom:1rpx solid rgba(227,227,230,1);
+              image{
+                text-align: right;
+              }
+          .text{
+            font-size:48rpx;
+            font-family:PingFangSC-Semibold;
+            font-weight:600;
+            color:rgba(49,49,49,1);
+            flex:1;
+            // margin-left: 25rpx;
+          }
+        }
+        }
       }
     }
     .tarbar{

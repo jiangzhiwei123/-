@@ -1,25 +1,17 @@
 <template>
   <view class="imformate">
     <form bindsubmit="formSubmit">  
-      <!-- <view class="name">
-        <view>姓名<text style="color:#FF6B79;">*</text></view>
-        <input type="text" placeholder="请输入姓名">
-      </view>    
-      <view class="sex">
-        <view>性别<text style="color:#FF6B79;">*</text></view>
-        <input type="text">
-      </view>        -->
       <!-- 姓名 -->
       <view class="cu-form-group">
         <view class="title">姓名<text style="color:#FF6B79;">*</text></view>
-        <input placeholder="请输入姓名" placeholder-style="text-align:right;" name='name' />
+        <input placeholder="请输入姓名" placeholder-style="text-align:right;" name='name' value='{{form.name}}' bindinput="getName" />
       </view>
       <!-- 性别 -->
       <view class="cu-form-group">
         <view class="title">性别<text style="color:#FF6B79;">*</text></view>
         <picker bindchange="PickerChangeSex" value="{{sexIndex}}" range="{{sex}}">
           <view class="picker" style="color:black;">
-            {{sexIndex?sex[sexIndex]:'男'}}
+            {{sexIndex?sex[sexIndex]:'性别'}}
           </view>
         </picker>
       </view>
@@ -35,13 +27,13 @@
       <!-- 身份证号 -->
       <view class="cu-form-group">
         <view class="title">身份证号</view>
-        <input placeholder="请填写(如:420...)" placeholder-style="text-align:right;"/>
+        <input placeholder="请填写(如:420...)" placeholder-style="text-align:right;" value="{{form.idNumber}}" bindblur ="getIdCard" />
       </view>
       <!-- 手机号码 -->
       <view class="cu-form-group" style="margin-top:16rpx;">
         <view class="title">电话<text style="color:#FF6B79;">*</text></view>
         <input placeholder="请填写(如:135...)" placeholder-style="text-align:right;"
-        name='phone' /> 
+        name='phone' bindblur="getPhone" /> 
         <!-- <view class="cu-capsule radius">
           <view class="cu-tag bg-blue">
             +86
@@ -54,12 +46,12 @@
       <!-- 微信号码 -->
       <view class="cu-form-group">
         <view class="title">微信号</view>
-        <input placeholder="输填写(如:153...)" placeholder-style="text-align:right;"/>
+        <input placeholder="输填写(如:153...)" placeholder-style="text-align:right;" bindblur="getWechat" />
       </view>
       <!-- QQ号 -->
       <view class="cu-form-group">
         <view class="title">QQ号</view>
-        <input placeholder="输填写(如:232...)" placeholder-style="text-align:right;"/>
+        <input placeholder="输填写(如:232...)" placeholder-style="text-align:right;" bindblur="getQQ" />
       </view>
       <!-- 月收入 -->
       <view class="cu-form-group" style="margin-top:16rpx;">
@@ -73,7 +65,7 @@
        <!-- 身高 -->
       <view class="cu-form-group">
         <view class="title">身高</view>
-        <input placeholder="请填写(如:172)" placeholder-style="text-align:right;"/>
+        <input placeholder="请填写(如:172)" placeholder-style="text-align:right;" bindblur="getHeight"  />
       </view>
       <!-- 学历 -->
       <view class="cu-form-group" style="margin-bottom:43rpx;">
@@ -90,7 +82,7 @@
           loading="{{loading}}"
           plain="{{plain}}"
           formType="submit"
-          hover-class="other-button-hover" class="btn">
+          hover-class="other-button-hover" class="btn" bindtap="isPublish">
       保存
           </button>
     </form>
@@ -99,7 +91,8 @@
 
 <script>
   import { createPage } from '@mpxjs/core'
-  import WxValidate from "../api/checkForm.js"; 
+  import WxValidate from "../api/checkForm.js";
+  import store from '../store/general.js' 
   createPage({
     data: {
       index: null,
@@ -115,12 +108,50 @@
       imgList: [],
       modalName: null,
       textareaAValue: '',
-      textareaBValue: ''
+      textareaBValue: '',
+      form:{
+        name:'',
+        sex:'',
+        birthday:'',
+        idNumber:'',
+        phone:'',
+        wehcart:'',
+        qqNumber:'',
+        monthlyIncomde:'',
+        height:'',
+        educational:''
+      }
     },
     onLoad () {
       this.initValidate()
     },
     methods: {
+      ...store.mapActions(['changeInforma']),
+      // 获取姓名
+      getName(e){
+        this.form.name = e.detail.value
+        console.log(this.form.name )
+      },
+      // 获取身份证
+      getIdCard(e){
+        this.form.idNumber = e.detail.value
+      },
+      // 获取手机号
+      getPhone(e){
+        this.form.phone = e.detail.value
+      },
+      // 获取微信号
+      getWechat(e){
+        this.form.wehcart = e.detail.value
+      },
+      // 获取QQ号
+      getQQ(e){
+        this.form.qqNumber = e.detail.value
+      },
+      // 获取身高
+      getHeight(e){
+        this.form.height=e.detail.value
+      },
        //报错 
       showModal(error) {
         let  _this = this;
@@ -199,24 +230,49 @@
               this.showModal(error)
               return false
           }else{
-              // console.log(this.isJump)
-              this.showModal({
-                  msg: '提交成功',
-              })
+            this.changeInforma({name:this.form.name,sex:this.sex[this.sexIndex],birthday:this.date ,idNumber:this.form.idNumber,phone:this.form.phone,wehcart:this.form.wehcart,qqNumber:this.form.qqNumber,monthlyIncomde:this.picker[this.index],height:this.form.height,educational:this.study[this.studyIndex] })
+            //   // // console.log(this.isJump)
+              // this.showModal({
+              //     msg: '提交成功',
+              // })
           } 
       },
-      // 改变日期
+      isPublish(){
+        // 是否发布
+        // wx.showModal({
+        //   title: '提示',
+        //   content: '是否保存',
+        //   success (res) {
+        //     if (res.confirm) {
+        //       console.log('用户点击确定')
+        //       wx.navigateBack({
+        //         delta: 1
+        //       })
+        //     } else if (res.cancel) {
+        //       console.log('用户点击取消')
+        //     }
+        //   }
+        // })
+      },
+      // 改变日期 获取日期
       DateChange(e) {
         this.date = e.detail.value
+        // this.form.birthday = e.
+        console.log(1111111,this.date)
       },
+      // 获取性别
       PickerChangeSex(e) {
         this.sexIndex = e.detail.value
+        console.log(this.sex[this.sexIndex])
+        console.log(e)
       },
       PickerChangeMon(e) {
         this.index = e.detail.value
+        console.log(this.picker[this.index])
       },
       PickerChange(e) {
         this.studyIndex = e.detail.value
+        console.log(this.study[this.studyIndex])
       },
       MultiChange(e) {
         this.multiIndex = e.detail.value
@@ -304,6 +360,9 @@
       background:rgba(255,107,121,1);
       border-radius:48rpx;
       color:white;
+   }
+   input{
+     width: 50rpx;
    }
  }
 </style>

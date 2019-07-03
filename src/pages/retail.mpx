@@ -1,15 +1,15 @@
 <template>
   <view class="retail">
     <!-- 分销金额 -->
-   <view class="title">分销佣金总额:30元</view>
-   <view wx:for="{{2}}" wx:key="{{index}}" class="content">
-     <view>分销人员姓名:王**</view>
-     <view>分销人员电话:159****9023</view>
-     <view>客户消费时间:2019-5-29</view>
-     <view>消费类型:年会员</view>
+   <view class="title">分销佣金总额:{{fenXiao.rows.brokerageAmountSum}}元</view>
+   <view wx:for="{{fenXiao.rows.brokerageInfos}}" wx:key="{{index}}" class="content">
+     <view>分销人员姓名:{{item.consumerName}}</view>
+     <view>分销人员电话:{{item.consumerPhone}}</view>
+     <view>客户消费时间:{{item.createDate}}</view>
+     <view>消费类型:{{item.consumTypeShow}}</view>
      <view class="bottom">
-       <view style="color:#FF8E1F;">消费金额:1元</view>
-       <view style="color:#FF6B79;">佣金:0.1元</view>
+       <view style="color:#FF8E1F;">消费金额:{{item.consumAmount}}元</view>
+       <view style="color:#FF6B79;">佣金:{{item.brokerageAmount}}元</view>
      </view>
    </view>
   </view>
@@ -17,9 +17,17 @@
 
 <script>
   import { createPage } from '@mpxjs/core'
-
+  import store from '../store/general.js'
   createPage({
-    onLoad () {}
+    methods: {
+      ...store.mapActions(['getFenxiao'])
+    },
+    computed: {
+      ...store.mapState(['cashList','fenXiao'])
+    },
+    onLoad () {
+      this.getFenxiao()
+    }
   })
 </script>
 <style lang="less" scoped>
@@ -40,7 +48,7 @@
     }
     .content{
       width:686rpx;
-      height:386rpx;
+      // height:386rpx;
       padding:39rpx 32rpx;
       margin-top: 23rpx;
       background:rgba(255,255,255,1);
@@ -65,7 +73,7 @@
   {
     "usingComponents": {
     },
-    "navigationBarTitleText": "提现",
+    "navigationBarTitleText": "分销佣金",
     "navigationBarBackgroundColor":"#FF6B79",
     "navigationBarTextStyle":"white"
   }

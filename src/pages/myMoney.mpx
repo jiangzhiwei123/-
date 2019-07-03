@@ -4,24 +4,24 @@
     <view class="money">
       <!-- 左边 -->
       <view class="text">
-        <view class="have">佣金总额:<text style="color:#FF8E1F;">312.8元</text></view>
-        <view class="had">可提现总额:<text style="color:#FF6B79;">312.8元</text></view>
-        <view class="all">已提现总额:<text>1202元</text></view>
+        <view class="have">佣金总额:<text style="color:#FF8E1F;">{{myMoneyData.brokerageAmountSum}}元</text></view>
+        <view class="had">可提现总额:<text style="color:#FF6B79;">{{myMoneyData.canAmount}}元</text></view>
+        <view class="all">已提现总额:<text>{{myMoneyData.aleryAmountSum}}元</text></view>
       </view>
       <!-- 右边 -->
-      <view class="cashButton">提现</view>
+      <view class="cashButton" bindtap="takeMoney">提现</view>
     </view>
     <!-- 详细部分 -->
     <view class="content">
-      <view class="info"  wx:for="{{2}}" wx:key="{{index}}">
+      <view class="info"  wx:for="{{myMoneyData.brokerageInfos}}" wx:key="{{index}}">
         <!-- 头像 -->
         <image src="../images/icon_money.png"></image>
         <view class="text">
-          <view>九*</view>
-          <view>ID:12**23</view>
-          <view>联系电话:159****9023</view>
-          <view>注册时间:2019-5-29</view>
-          <view>消费金额:1元</view>
+          <view>{{item.consumerName}}</view>
+          <view>ID:{{item.id}}</view>
+          <view>联系电话:{{item.consumerPhone}}</view>
+          <view>注册时间:{{item.createDate}}</view>
+          <view>消费金额:{{item.consumAmount}}元</view>
         </view>
       </view>
     </view>
@@ -30,9 +30,23 @@
 
 <script>
   import { createPage } from '@mpxjs/core'
+  import store from '../store/general.js'
 
   createPage({
-    onLoad () {}
+    methods: {
+      ...store.mapActions(['getInfo']),
+      takeMoney(){
+        wx.navigateTo({
+          url: './myCash'
+        })
+      }
+    },
+    computed: {
+      ...store.mapState(['cashList','myMoneyData'])
+    },
+    onLoad () {
+      this.getInfo()
+    }
   })
 </script>
 <style lang="less" scoped>
@@ -51,10 +65,11 @@
       .text{
         display: flex;
         flex-direction: column;
-        margin-right: 86rpx;
+        // margin-right: 86rpx;
+        flex:1;
       }
       .cashButton{
-        flex:1;
+        
         width: 120rpx;
         height: 120rpx;
         line-height: 120rpx;

@@ -2,17 +2,17 @@
   <view class="cashPage">
     <!-- 提现金额 -->
     <view class="take">
-      <view class="can">可提现金额:<text style="color:#FF6B79;">312.8元</text></view>
+      <view class="can">可提现金额:<text style="color:#FF6B79;">{{cashList.rows.canAmount}}元</text></view>
       <view class="inputBox">
         <view>￥</view>
         <view>
-          <input type="text" placeholder="请输入提现金额" style="width:334rpx;">
+          <input type="number" placeholder="请输入提现金额" style="width:334rpx;" bindinput="getNumber" value="{{moneyValue}}"/>
         </view>
-        <view style="color:#FF8E1F;">全部</view>
+        <view style="color:#FF8E1F;flex:1;" bindtap="allMoney">全部</view>
       </view>
     </view> 
     <!-- 提现按钮 -->
-    <button style="background:#FF6B79;font-size:40rpx;border-radius:48rpx;color:white;margin-bottom:47rpx;">提现</button>
+    <button style="background:#FF6B79;font-size:40rpx;border-radius:48rpx;color:white;margin-bottom:47rpx;" bindtap="isSure">提现</button>
     <!-- 提示 -->
     <view class="remain">提示:该提现会将你提现的额金额提现登录的支付宝,请在微信-钱包中查收</view>
   </view>
@@ -20,8 +20,40 @@
 
 <script>
   import { createPage } from '@mpxjs/core'
-
+  import store from '../store/general.js'
   createPage({
+    data:{
+      // number:Number,
+      moneyValue:''
+    },
+    methods: {
+      ...store.mapActions(['takeMoney']),
+    },
+    computed: {
+      ...store.mapState(['cashList']),
+    },
+    getNumber(e){
+      this.moneyValue = e.detail.value
+      console.log(this.number)
+    },
+    allMoney(){
+      this.moneyValue = this.cashList.rows.canAmount
+    },
+    isSure(){
+      var _this = this
+      wx.showModal({
+        title: '提示',
+        content: '是否确定提现',
+        success (res) {
+          if (res.confirm) {
+            console.log('用户点击确定')
+            _this.takeMoney()
+          }else if (res.cancel) {
+            console.log('用户点击取消')
+          }
+        }
+      })
+    },
     onLoad () {}
   })
 </script>

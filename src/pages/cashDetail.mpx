@@ -1,16 +1,16 @@
 <template>
   <view class="detail">
-    <view class="title">提现总额:140.00</view>
+    <view class="title">提现总额:{{txData.rows.putAmountSum+'.00'}}</view>
     <!-- 提现的记录 -->
     <view class="box">
-      <view wx:for="{{5}}" wx:key="{{index}}" class="content">
+      <view wx:for="{{txData.rows.detailDtos}}" wx:key="{{index}}" class="content">
         <image src="../images/icon_deposit_mx.png" style="width:64rpx;height:64rpx;"></image>
         <view class="text">
           <view class="topText">
-            <view>提现金额:20.00</view>
+            <view>提现金额:{{item.putAmount+'.00'}}</view>
             <view>成功</view>
           </view>
-          <view class="botText">2019-5-12 18:27</view>
+          <view class="botText">{{item.createDate}}</view>
         </view>
       </view>
     </view>
@@ -19,9 +19,20 @@
 
 <script>
   import { createPage } from '@mpxjs/core'
-
+  import store from '../store/general.js'
   createPage({
-    onLoad () {}
+    data:{
+
+    },
+    computed: {
+      ...store.mapState(['txData']),
+    },
+    methods: {
+      ...store.mapActions(['getCashDetail'])
+    },
+    onLoad(){
+      this.getCashDetail()
+    }
   })
 </script>
 <style lang="less" scoped>

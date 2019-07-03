@@ -1,35 +1,136 @@
 <template>
   <view class="loginPage">
     <!-- 表单 -->
+    <view class="title">莱莱红娘</view>
     <view class="content">
       <!-- 输入手机号部分 -->
        <view class="line">
-         <input type="text" placeholder="请输入手机号" placeholder-style="color:#333;"/>
+         <input type="text" placeholder="请输入手机号" placeholder-style="color:#333;" bindinput="getPhone"/>
        </view>
        <!-- 输入验证码部分 -->
        <view class="line" style="display:flex;justify-content:space-between;">
-         <input type="text" placeholder="请输入验证码" placeholder-style="color:#333;"/>
-         <view class="test">获取验证码</view>
+         <input type="text" placeholder="请输入验证码" placeholder-style="color:#333;" bindinput="codeValue"/>
+         <view class="test" bindtap="getCode">获取验证码</view>
        </view>
        <!-- 设置密码部分 -->
        <view class="line" style="display:flex;justify-content:space-between;margin-bottom:42rpx;">
-         <input type="text" placeholder="请设置密码(最少6位)" placeholder-style="color:#333;"/>
-         <image src="../images/icon_deposit.png" style="width:56rpx;height:56rpx;"></image>
+         <input type="{{isLook?'text':'password'}}" placeholder="请设置密码(最少6位)" placeholder-style="color:#333;" bindinput="getPassword" />
+         <image src="../images/可视.png" style="width:56rpx;height:56rpx;" bindtap="canLook"></image>
        </view>
        <!-- 注册按钮 -->
-       <button class="regBtn" style="margin-bottom:23rpx;line-height:88rpx;">注册</button>
+       <button class="regBtn" style="margin-bottom:23rpx;line-height:88rpx;" bindtap="registerBtn">注册</button>
        <!-- 已有账号,返回登录 -->
-       <button class="backBtn" style="margin-bottom:99rpx;line-height:88rpx;">已有账号,返回登录</button>
+       <button class="backBtn" style="margin-bottom:99rpx;line-height:88rpx;" bindtap="backLogin">已有账号,返回登录</button>
        <!-- 协议部分 -->
-       <view style="font-size:30rpx;text-align:center;">点击注册默认您同意<text style="color:#FF6B79;">《莱莱注册协议》</text></view>
+       <view style="font-size:30rpx;text-align:center;" bindtap="jumpAgree">点击注册默认您同意<text style="color:#FF6B79;">《莱莱注册协议》</text></view>
     </view>
   </view>
 </template>
 
 <script>
   import { createPage } from '@mpxjs/core'
-
+  import store from '../store/general.js'
+  import Http from '../api/http.js'
+  var md5Reg = require('../api/md5.js')
   createPage({
+    data:{
+      tel:'',
+      code:'',
+      // 密码
+      password:'',
+      // 是否可视
+      isLook:false
+    },
+    methods: {
+      // 跳转到注册协议
+      jumpAgree(){
+        wx.navigateTo({
+          url: './agree'
+        })
+      },
+      ...store.mapActions(['getCodeStore']),
+      // 已有账号返回登录
+      backLogin(){
+        wx.redirectTo({
+          url: './login'
+        })
+      },
+      // 获取手机号的值
+      getPhone(e){
+        this.tel = e.detail.value
+        console.log(5555,e)
+      },
+      // 获取验证码的值
+      codeValue(e){
+        this.code =e.detail.value
+        console.log(88888,e)
+      },
+      // 密码可视
+      canLook(){
+        this.isLook=!this.isLook
+      },
+      // 获取密码
+      getPassword(e){
+        // md5加密
+        this.password = md5Reg.md5(e.detail.value)
+        console.log(this.password)
+      },
+      // 获取验证码
+      getCode(){
+        console.log(this.tel)
+          var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        if(!myreg.test(this.tel)){
+          wx.showModal({
+            title: '提示',
+            content: '手机号码输入错误',
+            showCancel:false,
+            success (res) {
+              if (res.confirm) {
+                console.log('用户点击确定')
+              }
+            }
+          })
+        }else{
+          this.getCodeStore(this.tel)
+           console.log(this.tel)
+        }   
+      },
+      // 获取验证码
+      async getCodeStore(tel){
+        const res = await Http.get({
+          url : `/sms/send/${tel}/0`,
+        })
+        console.log(77777,res)
+      },
+      // 用户注册
+      registerBtn(){
+        if(this.password.length<6){
+           wx.showModal({
+            title: '提示',
+            content: '密码长度不小于6',
+            showCancel:false,
+          })
+        }else{
+          this.registerEvent(this.tel,this.code,this.password)
+        }
+        
+      },
+      // 用户注册接口
+      async registerEvent(username,code,matchmakerPass){
+        const res = await Http.post({
+          url : `/matchmaker/register`,
+          data:{
+            'username':username,
+            'code':code,
+            'matchmakerPass':matchmakerPass
+          },
+          header: {
+            "Content-Type": "application/json"
+          }
+        })
+        console.log(77777888,res)
+      }
+    },
     onLoad () {}
   })
 </script>
@@ -37,8 +138,20 @@
 <style lang="less" scoped>
   .loginPage{
     width: 750rpx;
-    height: 1207rpx;
-    background: white;
+    height: 1180rpx;
+    background: url("../images/icon_register_bg.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+    padding-top: 19rpx;
+    .title{
+      margin: 0 auto;
+      width:190rpx;
+      font-size:48rpx;
+      font-family:PingFangSC-Medium;
+      font-weight:500;
+      color:white;
+      z-index: 10;
+      margin-bottom: 366rpx;
+    }
     .content{
       padding:0 100rpx;
       font-size:40rpx;
@@ -77,7 +190,7 @@
     "usingComponents": {
     },
     "navigationBarTitleText": "注册",
-    "navigationBarBackgroundColor":"#FF6B79",
+    "navigationBarBackgroundColor":"#FF6F99",
     "navigationBarTextStyle":"white"
   }
 </script>

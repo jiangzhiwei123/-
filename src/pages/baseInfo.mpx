@@ -1,18 +1,207 @@
 <template>
-  <view class="cashPage">
-
+  <view class="baseInfo">
+    <view class="box">
+      <view class="item">
+        <view>姓名</view>
+        <view>{{cashList.nickName}}</view>
+      </view>
+      <!-- 现居地 -->
+      <view class="cu-form-group" style=" border-bottom:1px solid rgba(227,227,230,1);height:120rpx;">
+        <view class="title" id="style">现居地</view>
+        <picker mode="region" value="{{date}}" start="2015-09-01" end="2020-09-01" bindchange="DateChange">
+          <view class="picker" id="style">
+            {{date}}
+          </view>
+        </picker>
+      </view>
+      <view class="item">
+        <view>手机号</view>
+        <view>{{cashList.matchmakerTel}}</view>
+      </view>
+      <view class="item" style="margin:16rpx 0;">
+        <view>绑定微信</view>
+        <view>{{cashList.wechartAccount?cashList.wechartAccount:'未绑定'}}</view>
+      </view>
+      <!-- 分享给好友 -->
+      <view class="item" style="margin:16rpx 0;">
+        <view>分享给好友,获取分佣吧</view>
+      </view>
+      <!-- 分享部分 -->
+      <!-- 莱莱婚恋端 -->
+      <view class="item share">
+        <image src="../images/icon_lailaihunlian.png" style="height:80rpx;width:80rpx;border-radius:50%;"></image>
+        <view style="margin-left:-72rpx;">莱莱婚恋端APP</view>
+        <view style="color:#FF6B79;" bindtap="canShare" data-index="1">点击分享</view>
+      </view>
+      <!-- 莱莱家长端 -->
+      <view class="item share">
+        <image src="../images/icon_lialiajiazhang.png" style="height:80rpx;width:80rpx;border-radius:50%;"></image>
+        <view style="margin-left:-72rpx;">莱莱婚恋端APP</view>
+        <view style="color:#FF6B79;" bindtap="canShare" data-index="2">点击分享</view>
+      </view>
+      <!-- 莱莱红娘端 -->
+      <view class="item share" style="border:none;padding-bottom:116rpx;">
+        <image src="../images/icon_share_hongniang.png" style="height:80rpx;width:80rpx;border-radius:50%;"></image>
+        <view style="margin-left:-72rpx;">莱莱婚恋端APP</view>
+        <view style="color:#FF6B79;" bindtap="canShare" data-index="3">点击分享</view>
+      </view>
+      <!-- 分享部分蒙层 -->
+      <view class="meng {{isShare?'show':'hide'}}">
+        
+      </view>
+      <view class="pic {{isShare?'show':'hide'}}">
+        <!-- 头部文字 -->
+        <view class="head">保存图片分享给好友,好友下载办理会员后即可分佣!</view>
+        <image src="../images/icon_poster_hunlian.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==1?'show':'hide'}}"></image>
+        <image src="../images/icon_poster_jiazhang.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==2?'show':'hide'}}"></image>
+        <image src="../images/icon_poster_hongliang.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==3?'show':'hide'}}"></image>
+        <!-- 保存图片按钮 -->
+        <button class="keepBtn" bindtap="savePic">保存图片</button>
+        <!-- 叉掉的按钮 -->
+        <image src="../images/icon_cloose.png" style="width:64rpx;height:64rpx;" class="del" bindtap="delPic"></image>
+      </view>
+    </view>
   </view>
 </template>
 
 <script>
   import { createPage } from '@mpxjs/core'
+  import store from '../store/general.js'
 
   createPage({
-    onLoad () {}
+    data:{
+      sex:['男','女'],
+      sexIndex:null,
+      date: '请选择地区',
+      isShare:false,
+      // 图片的下表
+      picIndex:Number
+    },
+    onLoad () {
+      this.getInformation()
+      this.date = (this.cashList.province+this.cashList.matchmakerDesc).replace("省",'').replace("市",'')
+    },
+    computed: {
+      ...store.mapState(['cashList']),
+    },
+    methods: {
+      ...store.mapActions(['getInformation']),
+      // 关闭图片
+      delPic(){
+        this.isShare = false
+      },
+      // 点击分享的时候
+      canShare(e){
+        this.isShare = true
+        this.picIndex = e.currentTarget.dataset.index
+        console.log(this.picIndex)
+      },
+      // 点击保存图片
+      savePic(){
+        // 保存分享的图片
+        wx.saveImageToPhotosAlbum({
+          filePath : "../images/icon_poster_hunlian.png",   //这个只是测试路径，没有效果
+          success(res) {
+            console.log("success我爱你");
+          },
+          fail : function(res) {
+            console.log(123456789,res);
+          }
+        })
+      },
+      PickerChangeSex(e) {
+        this.sexIndex = e.detail.value
+      },
+      DateChange(e) {
+        this.date = e.detail.value
+      }
+    }
+    
   })
 </script>
 <style lang="less" scoped>
-  
+  .show{
+    display: block;
+  }
+  .hide{
+    display: none;
+  }
+  #style{
+      font-size:40rpx;
+      font-family:PingFangSC-Semibold;
+      font-weight:600;
+      color:rgba(51,51,51,1);
+  }
+  .baseInfo{
+    padding-top: 16rpx;
+    .box{      
+      // padding:0 35rpx;
+      // background: white;
+      .item{
+        font-size:40rpx;
+        font-family:PingFangSC-Semibold;
+        font-weight:600;
+        color:rgba(51,51,51,1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 35rpx 35rpx;
+        background: white;
+        border-bottom:1px solid rgba(227,227,230,1);
+      }
+      .meng{
+        position: fixed;
+        top:0;
+        left:0;
+        width:750rpx;
+        height:1206rpx;
+        background:rgba(0,0,0,1);
+        opacity:0.6;
+      }
+      .pic{
+          width: 549rpx;
+          height: 932rpx;
+          position: absolute;
+          left: 0;
+          right:0;
+          top:0;
+          bottom: 0;
+          margin:auto;
+          background: white;
+          opacity:1;
+          padding:45rpx 35rpx;
+          border-radius: 12rpx;
+          .head{
+            width:478rpx;
+            height:87rpx;
+            font-size:40rpx;
+            font-family:PingFangSC-Medium;
+            font-weight:Medium;
+            color:#333333;
+            line-height:48rpx;
+          }
+          .photo{
+            margin:28rpx 63rpx 27rpx;
+          }
+          .keepBtn{
+            width:388rpx;
+            height:88rpx;
+            line-height: 88rpx;
+            text-align: center;
+            background:rgba(252,135,200,1);
+            border-radius:44rpx;
+            color:white;
+            font-size: 40rpx;
+          }
+          .del{
+            position: absolute;
+            right:-32rpx;
+            top:-32rpx;
+          }
+        }
+    }
+    
+  }
 </style>
 
 <script type="application/json">

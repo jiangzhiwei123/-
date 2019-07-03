@@ -1,27 +1,29 @@
 <template>
   <view class="loginPage">
     <!-- 表单 -->
+    <!-- 莱莱红娘 -->
+    <view class="title">莱莱红娘</view>
     <view class="content">
       <!-- 输入手机号部分 -->
       <view class="line">
-        <input type="text" placeholder="请输入手机号" placeholder-style="color:#333;"/>
-      </view>
-      <!-- 输入验证码部分 -->
-      <view class="line" style="display:flex;justify-content:space-between;">
-        <input type="text" placeholder="请输入验证码" placeholder-style="color:#333;"/>
-        <view class="test">获取验证码</view>
+        <input type="text" placeholder="请输入手机号" placeholder-style="color:#333;font-weight:500;" bindinput="getTel"/>
       </view>
       <!-- 设置密码部分 -->
       <view class="line" style="display:flex;justify-content:space-between;margin-bottom:42rpx;">
-        <input type="text" placeholder="请设置密码(最少6位)" placeholder-style="color:#333;"/>
-        <image src="../images/icon_deposit.png" style="width:56rpx;height:56rpx;"></image>
+        <input type="{{isLook?'text':'password'}}" placeholder="请输入密码" placeholder-style="color:#333;font-weight:500;" bindinput='getPassword' />
+        <image src="../images/可视.png" style="width:56rpx;height:56rpx;" bindtap="changeLook"></image>
       </view>
       <!-- 注册按钮 -->
-      <button class="logBtn btnStyle" style="margin-bottom:23rpx;line-height:88rpx;">登录</button>
+      <button class="logBtn btnStyle" style="margin-bottom:23rpx;line-height:88rpx;" bindtap="toLogin">登录</button>
       <!-- 忘记密码立即注册按钮 -->
       <view class="twoBtn" style="display:flex;margin-top:32rpx;">
         <button class="btnStyle" style="width:216rpx;margin-right:117rpx;">忘记密码?</button>
-        <button class="btnStyle" style="width:216rpx;">立即注册</button>
+        <button class="btnStyle" style="width:216rpx;" bindtap="jumpRegister">立即注册</button>
+      </view>
+      <!-- 绑定微信 -->
+      <view class="wxBind">
+        <image src="../images/icon_wechat.png" style="width:76rpx;height:76rpx;"></image>
+        <view class="text">绑定微信</view>
       </view>
     </view>
   </view>
@@ -30,12 +32,41 @@
 <script>
   import { createPage } from '@mpxjs/core'
   import store from '../store/general.js'
+  import Http from '../api/http.js'
+  var md5Reg = require('../api/md5.js')
   createPage({
+    data:{
+        phone:Number,
+        password:'',
+        isLook:false
+    },
     methods: {
-      ...store.mapActions(['changeCollect'])
+      ...store.mapActions(['loginEvent']),
+      // 登录
+      toLogin(){
+        this.loginEvent({username:this.phone,password:this.password.toLowerCase()})
+      },
+      // 改变密码的查看状态
+      changeLook(){
+        this.isLook = !this.isLook
+      },
+      jumpRegister(){
+        console.log(132132)
+        wx.redirectTo({
+          url: './register'
+        })
+      },
+      // ...store.mapActions(['changeCollect'])
+      getTel(e){
+        this.phone = e.detail.value
+        console.log(this.phone)
+      },
+      getPassword(e){
+        this.password = md5Reg.md5(e.detail.value)
+      }
     },
     onLoad () {
-      this.changeCollect()
+      // this.changeCollect()
     }
   })
 </script>
@@ -43,8 +74,20 @@
 <style lang="less" scoped>
   .loginPage{
     width: 750rpx;
-    height: 1207rpx;
-    background: white;
+    height: 1180rpx;
+    background: url("../images/icon_register_bg.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+    padding-top: 19rpx;
+    .title{
+      margin: 0 auto;
+      width:190rpx;
+      font-size:48rpx;
+      font-family:PingFangSC-Medium;
+      font-weight:500;
+      color:white;
+      z-index: 10;
+      margin-bottom: 426rpx;
+    }
     .content{
       padding:0 100rpx;
       font-size:40rpx;
@@ -73,9 +116,23 @@
         color:white;
         background:rgba(255,102,102,1);
         border-radius:6rpx;
-        font-size: 40rpx;
+        font-size: 35rpx;
         line-height: 88rpx;
         text-align: center;
+      }
+      .wxBind{
+        width:118rpx;
+        font-size:30rpx;
+        font-family:PingFangSC-Medium;
+        font-weight:500;
+        color:rgba(51,51,51,1);
+        margin:20rpx auto;
+        image{
+          margin-left: 22rpx;
+        }
+        .text{
+          text-align: center;
+        }
       }
     }
   }
@@ -86,7 +143,7 @@
     "usingComponents": {
     },
     "navigationBarTitleText": "登录",
-    "navigationBarBackgroundColor":"#FF6B79",
+    "navigationBarBackgroundColor":"#FF6F99",
     "navigationBarTextStyle":"white"
   }
 </script>
