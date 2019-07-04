@@ -1,5 +1,5 @@
 <template>
-  <view class="loginPage">
+  <view class="loginPage" style="height:{{thisHeight}}px;">
     <!-- 表单 -->
     <view class="title">莱莱红娘</view>
     <view class="content">
@@ -10,7 +10,7 @@
        <!-- 输入验证码部分 -->
        <view class="line" style="display:flex;justify-content:space-between;">
          <input type="text" placeholder="请输入验证码" placeholder-style="color:#333;" bindinput="codeValue"/>
-         <view class="test" bindtap="getCode">获取验证码</view>
+         <view class="test" bindtap="getCode" id="{{isClick?'grey':''}}">获取验证码</view>
        </view>
        <!-- 设置密码部分 -->
        <view class="line" style="display:flex;justify-content:space-between;margin-bottom:42rpx;">
@@ -39,7 +39,10 @@
       // 密码
       password:'',
       // 是否可视
-      isLook:false
+      isLook:false,
+      thisHeight:Number,
+      // 是否点击
+      isClick:false
     },
     methods: {
       // 跳转到注册协议
@@ -77,6 +80,7 @@
       },
       // 获取验证码
       getCode(){
+        this.isClick = true
         console.log(this.tel)
           var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
         if(!myreg.test(this.tel)){
@@ -104,6 +108,7 @@
       },
       // 用户注册
       registerBtn(){
+        this.isClick=false
         if(this.password.length<6){
            wx.showModal({
             title: '提示',
@@ -128,14 +133,42 @@
             "Content-Type": "application/json"
           }
         })
+        if(res.data.code=="02"){
+          wx.showModal({
+            title: '提示',
+            content: res.data.msg,
+            showCancel:false,
+          })
+        }else if(res.data.code=="01"){
+          wx.showModal({
+            title: '提示',
+            content: '注册成功',
+            showCancel:false,
+          })
+        }
         console.log(77777888,res)
       }
     },
-    onLoad () {}
+    async onLoad () {
+      // 加载的时候
+      this.isClick = false
+      var _this =this
+      await wx.getSystemInfo({
+        success (res) {
+          console.log(res.windowHeight)
+          _this.thisHeight = res.windowHeight
+          console.log( _this.thisHeight)
+        }
+      })
+    }
   })
 </script>
 
 <style lang="less" scoped>
+#grey{
+  color:#666;
+  border:2rpx solid #666;
+}
   .loginPage{
     width: 750rpx;
     height: 1180rpx;

@@ -6,9 +6,15 @@ const state={
   // 当前页数
   page:1,
   // 顾客列表信息
-  gkList:[]
+  gkList:[],
+  // 给一个状态值
+  listStatus:''
 }
 const mutations= {
+  // 更新状态值
+  updateStatus(state,p){
+    state.listStatus = p
+  },
   // 更新页数
   updatePic(state,p){
     state.page += p
@@ -28,14 +34,15 @@ const mutations= {
 }
 const actions = {
     // 我的客户列表信息
-    async takeGkList({state,commit},{like_customerName,matchId,pageSize ,pageNo}){
+    async takeGkList({state,commit},{like_customerName,matchId,getMember,pageSize ,pageNo}){
       const res = await Http.post({
         url:`/matchmaker/myCustomers`,
         // http://101.200.63.32:8082/matchmaker/pay/putforward 
         data:{
           parameters:{
             like_customerName,
-            matchId
+            matchId,
+            getMember
           },
           page:{
             pageSize,

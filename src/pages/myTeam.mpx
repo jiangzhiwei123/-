@@ -1,13 +1,13 @@
 <template>
-  <view class="custom">
+  <view class="custom" style="height:{{thisHeight}}px;">
     <!-- title部分 -->
     <!-- 主题内容部分 -->
     <view class="content">
       <!-- 头部 -->
       <view class="header">
-        <image src="../images/icon_front.png" style="width:40rpx;height:40rpx;"></image>
-        <view class="text">2019年</view>
-        <image src="../images/icon_behind.png" style="width:40rpx;height:40rpx;"></image>
+        <image src="../images/icon_front.png" style="width:40rpx;height:40rpx;" bindtap="reduce"></image>
+        <view class="text">{{newYear}}年</view>
+        <image src="../images/icon_behind.png" style="width:40rpx;height:40rpx;" bindtap="add"></image>
       </view>
       <!-- 主体部分 -->
       <view class="body">
@@ -38,18 +38,28 @@
       // time:[]
       // arrayTime:[0,0,0,0,0,0,0,0,0,0,0,0],
       can:false,
-      nowTime:''
+      nowTime:'',
+      thisHeight:Number
     },
     computed: {
-      ...store.mapState(['customData','lalal','arrayTime'])
+      ...store.mapState(['customData','lalal','arrayTime','newYear'])
     },
     methods: {
-      ...store.mapActions(['getCustom']),
+      ...store.mapActions(['getCustom','takeTeam']),
+      ...store.mapMutations(['reduceYear','addYear']),
+      reduce(){
+        this.reduceYear()
+        this.getCustom({memType:1,year:this.newYear})
+      },
+      add(){
+        this.addYear()
+        this.getCustom({memType:1,year:this.newYear})
+      },
       change(e){
         console.log(e)
         this.monthCurrent=e.currentTarget.dataset.num
         wx.navigateTo({
-          url: `./task?index=${e.currentTarget.dataset.num}`
+          url: `./taskTeam?index=${e.currentTarget.dataset.num}`
         })
       },
       click(e){
@@ -63,9 +73,9 @@
         this.isShow=false
       }
     },
-    onLoad(){
-        this.getCustom(2019)
-        
+    async onLoad(){
+        this.getCustom({memType:1,year:this.newYear})
+        // this.takeTeam({matchId,month})
         // 时间
         // .slice(5,7).replace(/\b(0+)/gi
         this.nowTime = new Date().getMonth()+1
@@ -76,8 +86,16 @@
         //   return item.memberNum=='2'
         // })
         // console.log(888899999,this.customData[0].registerDate.slice(5,7))
-        // console.log(888899999,this.customData[0])
-
+        // console.log(888899999,this.customData[0])\
+        // 获取设备信息
+        var _this =this
+        await wx.getSystemInfo({
+          success (res) {
+            console.log(res.windowHeight)
+            _this.thisHeight = res.windowHeight
+            console.log( _this.thisHeight)
+          }
+        })
     }
   })
 </script>

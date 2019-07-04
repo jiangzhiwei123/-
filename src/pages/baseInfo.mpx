@@ -1,5 +1,5 @@
 <template>
-  <view class="baseInfo">
+  <view class="baseInfo" style="height:{{thisHeight}}px;">
     <view class="box">
       <view class="item">
         <view>姓名</view>
@@ -77,9 +77,17 @@
       // 图片的下表
       picIndex:Number
     },
-    onLoad () {
+    async onLoad () {
       this.getInformation()
       this.date = (this.cashList.province+this.cashList.matchmakerDesc).replace("省",'').replace("市",'')
+      var _this =this
+      await wx.getSystemInfo({
+        success (res) {
+          console.log(res.windowHeight)
+          _this.thisHeight = res.windowHeight
+          console.log( _this.thisHeight)
+        }
+      })
     },
     computed: {
       ...store.mapState(['cashList']),

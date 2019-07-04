@@ -2,9 +2,25 @@
   import { createApp } from '@mpxjs/core'
   createApp({
     onLaunch(){
-      // wx.redirectTo({
-      //   url: './pages/login'
+      // onLaunch: function () {
+      // 登录
+      // wx.login({
+      //   success: res => {
+      //     // 发送 res.code 到后台换取 openId, sessionKey, unionId
+      //     wx.request({
+      //       //获取openid接口  
+      //       url: 'http://localhost/openid',
+      //       data: {
+      //         js_code: res.code,
+      //       },
+      //       method: 'POST',
+      //       success: function (res) {
+      //         console.log(res)
+      //       }
+      //     })  
+      //   }
       // })
+  // }
     }
   })
 </script>
@@ -29,6 +45,7 @@
       "./pages/informate",
       "./pages/task",
       "./pages/myTeam",
+      "./pages/taskTeam",
       "./pages/myCustom"
     ],
      "window": {

@@ -1,17 +1,17 @@
 <template>
-  <view class="custom">
+  <view class="custom" style="height:{{thisHeight}}px;">
     <!-- title部分 -->
     <view class="title">
-      <view class="{{current==1?'on':''}}" data-index="1" bindtap="click" style="margin-left:156rpx;margin-right:138rpx;">家长客户</view>
+      <view class="{{current==0?'on':''}}" data-index="0" bindtap="click" style="margin-left:156rpx;margin-right:138rpx;">家长客户</view>
       <view class="{{current==2?'on':''}}" data-index="2" bindtap="click">会员客户</view>
     </view>
     <!-- 主题内容部分 -->
     <view class="content">
       <!-- 头部 -->
       <view class="header">
-        <image src="../images/icon_front.png" style="width:40rpx;height:40rpx;"></image>
-        <view class="text">2019年</view>
-        <image src="../images/icon_behind.png" style="width:40rpx;height:40rpx;"></image>
+        <image src="../images/icon_front.png" style="width:40rpx;height:40rpx;" bindtap="reduce"></image>
+        <view class="text">{{newYear}}年</view>
+        <image src="../images/icon_behind.png" style="width:40rpx;height:40rpx;" bindtap="add"></image>
       </view>
       <!-- 主体部分 -->
       <view class="body">
@@ -30,11 +30,11 @@
       <!-- 分享的内容 -->
       <view class="bottom">
         <view class="top">
-          <view class="first" bindtap="showPic">
+          <view class="first" bindtap="showPic" data-current="1">
             <image src="../images/icon_lailaihunlian.png"></image>
             <view>莱莱婚恋</view>
           </view>
-          <view class="second" bindtap="showPic">
+          <view class="second" bindtap="showPic" data-current="2">
             <image src="../images/icon_lialiajiazhang.png"></image>
             <view>莱莱家长</view>
           </view>
@@ -53,7 +53,6 @@
         <view class="head">保存图片分享给好友,好友下载办理会员后即可分佣!</view>
         <image src="../images/icon_poster_hunlian.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==1?'show':'hide'}}"></image>
         <image src="../images/icon_poster_jiazhang.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==2?'show':'hide'}}"></image>
-        <image src="../images/icon_poster_hongliang.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==3?'show':'hide'}}"></image>
         <!-- 保存图片按钮 -->
         <button class="keepBtn" bindtap="savePic">保存图片</button>
         <!-- 叉掉的按钮 -->
@@ -67,7 +66,7 @@
   import store from '../store/general.js'
   createPage({
     data:{
-      current:1,
+      current:0,
       monthCurrent:Number,
       isShow:false,
       // 分享图片
@@ -77,34 +76,66 @@
       // time:[]
       // arrayTime:[0,0,0,0,0,0,0,0,0,0,0,0],
       can:false,
-      nowTime:''
+      nowTime:'',
+      thisHeight:Number,
+      status:''
     },
     computed: {
-      ...store.mapState(['customData','lalal','arrayTime'])
+      ...store.mapState(['customData','lalal','arrayTime','newYear','listStatus'])
     },
     methods: {
+      // 点击婚恋按钮弹出二维码分享部分
+      reduce(){
+        this.reduceYear()
+        this.getCustom({memType:this.current,year:this.newYear})
+      },
+      add(){
+        this.addYear()
+        this.getCustom({memType:this.current,year:this.newYear})
+      },
+      showPic(e){
+        this.isShare =true
+        this.picIndex=e.currentTarget.dataset.current
+        console.log(88888,e)
+        console.log(88888,this.picIndex)
+      },
       ...store.mapActions(['getCustom']),
+      ...store.mapMutations(['reduceYear','addYear','updateStatus','clearLalal']),
       change(e){
         console.log(e)
         this.monthCurrent=e.currentTarget.dataset.num
         wx.navigateTo({
-          url: `./task?index=${e.currentTarget.dataset.num}`
+          url: `./task?index=${e.currentTarget.dataset.num}&status=${this.status}`
         })
       },
       click(e){
+        // 清空存储的时间
+        this.clearLalal()
         console.log(e)
         this.current = e.currentTarget.dataset.index
+        // 点击的时候重新刷新数据
+        if(this.current=="2"){
+          this.status=""
+          console.log("我是谁"+this.status)
+        }else if(this.current=="0"){
+          this.status=1
+          console.log("我是谁"+this.status)
+        }
+        this.getCustom({memType:this.current,year:this.newYear})
       },
       showMeng(){
         this.isShow=true
       },
       del(){
         this.isShow=false
+      },
+      delPic(){
+        this.isShare = false
       }
     },
-    onLoad(){
-        this.getCustom(2019)
-        
+    async onLoad(){
+        this.getCustom({memType:this.current,year:this.newYear})
+        console.log("我是谁"+this.status)
         // 时间
         // .slice(5,7).replace(/\b(0+)/gi
         this.nowTime = new Date().getMonth()+1
@@ -114,6 +145,14 @@
         // const index = this.customData.findIndex(item=>{
         //   return item.memberNum=='2'
         // })
+        var _this =this
+        await wx.getSystemInfo({
+          success (res) {
+            console.log(res.windowHeight)
+            _this.thisHeight = res.windowHeight
+            console.log( _this.thisHeight)
+          }
+        })
         // console.log(888899999,this.customData[0].registerDate.slice(5,7))
         // console.log(888899999,this.customData[0])
 
@@ -131,6 +170,48 @@
 .hide{
   display: none;
 }
+.pic{
+  z-index: 99;
+    width: 549rpx;
+    height: 932rpx;
+    position: absolute;
+    left: 0;
+    right:0;
+    top:0;
+    bottom: 0;
+    margin:auto;
+    background: white;
+    opacity:1;
+    padding:45rpx 35rpx;
+    border-radius: 12rpx;
+    .head{
+      width:478rpx;
+      height:87rpx;
+      font-size:40rpx;
+      font-family:PingFangSC-Medium;
+      font-weight:Medium;
+      color:#333333;
+      line-height:48rpx;
+    }
+    .photo{
+      margin:28rpx 63rpx 27rpx;
+    }
+    .keepBtn{
+      width:388rpx;
+      height:88rpx;
+      line-height: 88rpx;
+      text-align: center;
+      background:rgba(252,135,200,1);
+      border-radius:44rpx;
+      color:white;
+      font-size: 40rpx;
+    }
+    .del{
+      position: absolute;
+      right:-32rpx;
+      top:-32rpx;
+    }
+  }
   .custom{
     background: white;
     padding-bottom: 212rpx;
@@ -141,7 +222,7 @@
       left:0;
       width:750rpx;
       height:1206rpx;
-      background:rgba(0,0,0,0.2);
+      background:rgba(0,0,0,0.4);
       // opacity:0.2;
       .bottom{
         position: fixed;

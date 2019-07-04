@@ -1,12 +1,12 @@
 <template>
   <view class="task" style="height:{{gkList.length>3?'':thisHeight}}px;">
     <view class="content">
-      <view class="info"  wx:for="{{gkList}}" wx:key="{{index}}" bindtap="aa">
+      <view class="info"  wx:for="{{myTeamData}}" wx:key="{{index}}" bindtap="aa">
         <view class="text">
-          <view>{{item.customerName}}</view>
-          <view>ID:{{item.memberId}}</view>
-          <view>联系电话:{{item.customerPhone}}</view>
-          <view>注册时间:{{item.registerDate}}{{listStatus}}</view>
+          <view>{{item.nickName}}</view>
+          <view>ID:{{item.id}}</view>
+          <view>联系电话:{{item.username}}</view>
+          <view>注册时间:{{item.createDate}}{{listStatus}}</view>
         </view>
       </view>
     </view>
@@ -24,7 +24,7 @@
       taskStatus:''
     },
     methods: {
-      ...store.mapActions(['getCustom','getInfo','takeGkList','listStatus']),
+      ...store.mapActions(['getCustom','getInfo','takeGkList','listStatus','takeTeam']),
       ...store.mapMutations(['updatePic','clearGkList','clearPage','updateStatus']),
       aa(){
         console.log(123)
@@ -32,7 +32,7 @@
       }
     },
     computed: {
-      ...store.mapState(['myMoneyData','gkList','page'])
+      ...store.mapState(['myMoneyData','gkList','page','myTeamData'])
     },
     /**
      * 页面上拉触底事件的处理函数
@@ -44,7 +44,7 @@
       })
       this.updatePic(1)
       // console
-      this.takeGkList({like_customerName:this.month,getMember:this.taskStatus,matchId:121,pageSize:10,pageNo:this.page})
+      // this.takeTeam({like_customerName:this.month,getMember:this.taskStatus,matchId:121,pageSize:10,pageNo:this.page})
       // console.log(555555555555555,this.pageCount)
       // // 调用请求函数 如果当前页数小于总页数
       // if(this.pageCount<this.totalPage){
@@ -83,7 +83,7 @@
       // 查询状态
       this.taskStatus = options.status
       this.getInfo()
-      await this.takeGkList({like_customerName:(Number(options.index)+1),getMember:options.status,matchId:121,pageSize:10,pageNo:this.page})
+      await this.takeTeam(this.month)
 
     }
   })

@@ -1,5 +1,5 @@
 <template>
-  <view class="indexPage">
+  <view class="indexPage" style="height:{{thisHeight}}px;">
     <!-- banner部分 -->
     <view class="bgPic" style="padding-top:50rpx;text-align:center;">
       <view class="con">
@@ -75,14 +75,15 @@
 
   createPage({
     data:{
-      current:1
+      current:1,
+      thisHeight:Number
     },
     computed: {
-      ...store.mapState(['cashList','totle','myMoneyData','customData','num']),
+      ...store.mapState(['cashList','totle','myMoneyData','customData','num','totle']),
     },
     methods: {
       ...store.mapActions(['getInformation','getCustom','getInfo']),
-      ...store.mapMutations(['updateAll']),
+      ...store.mapMutations(['updateAll','updateAll']),
       // 点击下面图标部分
       click(e){
         this.current = e.currentTarget.dataset.tarcur
@@ -132,11 +133,21 @@
         })
       }
     },
-    onLoad(){
+    async onLoad(){
       this.getInformation()
       // 分销金额
       this.getInfo()
       // this.updateAll()
+      var _this =this
+      await wx.getSystemInfo({
+        success (res) {
+          console.log(res.windowHeight)
+          _this.thisHeight = res.windowHeight
+          console.log( _this.thisHeight)
+        }
+      })
+      // 计算出总客户数
+      this.updateAll()
     },
     onshow () {
       this.current = 1

@@ -31,14 +31,22 @@ const actions = {
     context.commit('upCode',res)
   },
   // 用户登录
-  async loginEvent({commit} ,{ username, password}){
+  async loginEvent({commit} ,{ username, password,code}){
     console.log(77777888,username)
     console.log(77777888,password)
+    // const code = (await wx.login()).code
+    // wx.login({
+    //   success: res => {
+    //     // 发送 res.code 到后台换取 openId, sessionKey, unionId 
+    //   }
+    // })
+    console.log(565656565,code)
     const res = await Http.post({
       url : `/matchmaker/login`,
       data:{
         username,
-        password
+        password,
+        code
       }
     })
     if(res.data.code=='02'){

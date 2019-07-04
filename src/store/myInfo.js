@@ -21,10 +21,20 @@ import store from './general';
     // 数量
     numArray:[],
     arrayTime:[0,0,0,0,0,0,0,0,0,0,0,0],
-    totle:0
+    totle:0,
+    // 当前的年份
+    newYear:2019,
+    // 更新团队成员数据
+    myTeamData:[]
   }
   const mutations= {
-    
+    // 改变当前年份
+    reduceYear(state){
+      state.newYear--
+    },
+    addYear(state){
+      state.newYear++
+    },
     // 更新cashList
     updatePerson(state,t){
       state.cashList=t
@@ -53,10 +63,24 @@ import store from './general';
     // updateNumber(state,t){
     //   state.num=t
     // },
-    // 总客户数
-    updateAll(state,t){
-      state.totle += t
+    // 计算总客户数
+    updateAll(state){
+      for(let i in state.numArray){
+        state.totle+=state.numArray[i]
+      }
+    },
+    // 更新我的团队的数据
+    updateMyTeam(state,t){
+      state.myTeamData=t
+    },
+    // 清空lalal
+    clearLalal(state){
+      state.lalal=[]
+    },
+    clearArray(state,t){
+      state.arrayTime=t
     }
+
   }
   const getters = {}
   const actions = {
@@ -98,16 +122,19 @@ import store from './general';
       console.log(321321321,res.data)
     },
     // 查询我的客户的信息
-    async getCustom({state,commit},month){
+    async getCustom({state,commit},{memType,year}){
       const res = await Http.get({
-        url:`/matchmaker/getmemberBymonth/0/${month}`,
+        url:`/matchmaker/getmemberBymonth/${memType}/${year}`,
       })
       commit('updateCustomData',res.data.rows)
+      commit('clearArray',[0,0,0,0,0,0,0,0,0,0,0])
       for(let i in res.data.rows){
         // console.log(res.data.rows[i].registerDate.slice(5,7))
         state.lalal.push(res.data.rows[i].registerDate.slice(5,7).replace(/\b(0+)/gi,""))
+        // state.arrayTime.splice(0,11,0)
         state.arrayTime.splice((state.lalal[i]-1),1,res.data.rows[i].memberNum)
-        state.numArray.push(i)
+        state.numArray.push(res.data.rows[i].memberNum)
+        console.log(494949494949,state.numArray)
         // store.commit('updateAll',res.data.rows[i].memberNum)
       }
       // commit('updateAll',5)
@@ -119,19 +146,28 @@ import store from './general';
       console.log(888888877777999,res.data.rows)
     },
     // 支付接口
-    async takeMoney({commit},{matchmakerId,putType,putAmount,matchPhone,wechartAccount}){
+    async takeMoney({commit},{matchmakerId,putType,putAmount,matchPhone,wechartAccount,openId}){
       const res = await Http.post({
-        url:`/matchmaker/putforward`,
+        url:`/matchmaker/pay/putforward`,
         // http://101.200.63.32:8082/matchmaker/pay/putforward 
         data:{
           matchmakerId,
           putType,
           putAmount,
           matchPhone,
-          wechartAccount
+          wechartAccount,
+          openId
         }
       })
       console.log(3333333,res)
+    },
+    // 查看我的团队人员
+    async takeTeam({commit},month){
+      const res = await Http.get({
+        url:`/matchmaker/myDistributions/${wx.getStorageSync('matchId')}/${month}`
+      })
+      commit('updateMyTeam',res.data.rows)
+      console.log(5555544446666,res.data.rows)
     }
     // async getCodeStore(context,tel){
     //   const res = await Http.get({

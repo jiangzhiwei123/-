@@ -1,5 +1,5 @@
 <template>
-  <view class="loginPage">
+  <view class="loginPage" style="height:{{thisHeight}}px;">
     <!-- 表单 -->
     <!-- 莱莱红娘 -->
     <view class="title">莱莱红娘</view>
@@ -38,13 +38,21 @@
     data:{
         phone:Number,
         password:'',
-        isLook:false
+        isLook:false,
+        thisHeight:Number
     },
     methods: {
       ...store.mapActions(['loginEvent']),
       // 登录
       toLogin(){
-        this.loginEvent({username:this.phone,password:this.password.toLowerCase()})
+        wx.login({
+        success: res => {
+          // 发送 res.code 到后台换取 openId, sessionKey, unionId
+          console.log(444444444,res)
+          this.loginEvent({username:this.phone,password:this.password.toLowerCase(),code:res.code})
+        }
+      })
+        
       },
       // 改变密码的查看状态
       changeLook(){
@@ -65,8 +73,16 @@
         this.password = md5Reg.md5(e.detail.value)
       }
     },
-    onLoad () {
+    async onLoad () {
       // this.changeCollect()
+      var _this =this
+      await wx.getSystemInfo({
+        success (res) {
+          console.log(res.windowHeight)
+          _this.thisHeight = res.windowHeight
+          console.log( _this.thisHeight)
+        }
+      })
     }
   })
 </script>
@@ -74,7 +90,7 @@
 <style lang="less" scoped>
   .loginPage{
     width: 750rpx;
-    height: 1208rpx;
+    // height: 1258rpx;
     background: url("../images/icon_register_bg.png") 0 0 no-repeat;
     background-size: 100% 100%;
     padding-top: 19rpx;
@@ -122,7 +138,7 @@
       }
       .wxBind{
         width:118rpx;
-        font-size:30rpx;
+        font-size:28rpx;
         font-family:PingFangSC-Medium;
         font-weight:500;
         color:rgba(51,51,51,1);

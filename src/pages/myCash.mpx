@@ -1,13 +1,13 @@
 <template>
-  <view class="cashPage">
+  <view class="cashPage" style="height:{{thisHeight}}px;">
     <!-- 提现金额 -->
     <view class="take">
       <view class="can">可提现金额:<text style="color:#FF6B79;">{{myMoneyData.canAmount}}元</text></view>
-      <view class="inputBox">
+      <view class="inputBox" style="height:46rpx;">
         <view>￥</view>
-        <view>
+        <!-- <view> -->
           <input type="number" placeholder="请输入提现金额" style="width:334rpx;" bindinput="getNumber" value="{{moneyValue}}"/>
-        </view>
+        <!-- </view> -->
         <view style="color:#FF8E1F;flex:1;" bindtap="allMoney">全部</view>
       </view>
     </view> 
@@ -26,7 +26,8 @@
       // number:Number,
       moneyValue:'',
       // 账户
-      account:''
+      account:'',
+      thisHeight:Number
     },
     methods: {
       ...store.mapActions(['takeMoney','getInfo']),
@@ -49,7 +50,7 @@
         success (res) {
           if (res.confirm) {
             console.log('用户点击确定')
-           _this.takeMoney({matchmakerId:_this.cashList.id,putType:_this.cashList.authInfo.authType,putAmount:_this.moneyValue,matchPhone:_this.cashList.matchmakerTel,wechartAccount:_this.account})
+           _this.takeMoney({matchmakerId:_this.cashList.id,putType:_this.cashList.authInfo.authType,putAmount:_this.moneyValue,matchPhone:_this.cashList.matchmakerTel,wechartAccount:_this.account,openId:'ovy8C5UcvKg9Heq2CMNhV0LFOM24'})
            wx.navigateBack({
               delta: 1
             })
@@ -59,7 +60,7 @@
         }
       })
     },
-    onLoad () {
+    async onLoad () {
       this.getInfo()
       if(this.cashList.authInfo.authType=='1'){
         console.log(123)
@@ -69,6 +70,14 @@
         this.account=this.cashList.wechartAccount
         console.log(this.cashList.wechartAccount)
       }
+      var _this =this
+      await wx.getSystemInfo({
+        success (res) {
+          console.log(res.windowHeight)
+          _this.thisHeight = res.windowHeight
+          console.log( _this.thisHeight)
+        }
+      })
     }
   })
 </script>
@@ -85,7 +94,7 @@
       box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
       border-radius:21rpx;
       padding:78rpx 32rpx;
-      font-size: 48rpx;
+      font-size: 46rpx;
       margin-bottom: 81rpx;
       .can{
         margin-bottom: 69rpx;

@@ -1,5 +1,5 @@
 <template>
-  <view class="imformate">
+  <view class="imformate" style="height:{{thisHeight}}px;">
     <form bindsubmit="formSubmit">  
       <!-- 姓名 -->
       <view class="cu-form-group">
@@ -119,11 +119,20 @@
         qqNumber:'',
         monthlyIncomde:'',
         height:'',
-        educational:''
+        educational:'',
+        thisHeight:Number
       }
     },
-    onLoad () {
+    async onLoad () {
       this.initValidate()
+      var _this =this
+        await wx.getSystemInfo({
+          success (res) {
+            console.log(res.windowHeight)
+            _this.thisHeight = res.windowHeight
+            console.log( _this.thisHeight)
+          }
+      })
     },
     methods: {
       ...store.mapActions(['changeInforma']),
