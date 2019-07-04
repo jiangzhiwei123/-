@@ -42,7 +42,7 @@
         thisHeight:Number
     },
     methods: {
-      ...store.mapActions(['loginEvent']),
+      ...store.mapActions(['loginEvent','getOpenid']),
       // 登录
       toLogin(){
         wx.login({
@@ -50,6 +50,7 @@
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
           console.log(444444444,res)
           this.loginEvent({username:this.phone,password:this.password.toLowerCase(),code:res.code})
+          this.getOpenid({JSCODE:res.code})
         }
       })
         
@@ -97,7 +98,7 @@
     .title{
       margin: 0 auto;
       width:190rpx;
-      font-size:48rpx;
+      font-size:47rpx;
       font-family:PingFangSC-Medium;
       font-weight:500;
       color:white;

@@ -11,9 +11,14 @@
       <!-- 右边 -->
       <view class="cashButton" bindtap="takeMoney">提现</view>
     </view>
+    <!-- 我的佣金明细 -->
+    <view class="title">
+      <view class="{{current==1?'on':''}}" data-index="1" bindtap="click" style="margin-left:156rpx;margin-right:138rpx;">家长客户</view>
+      <view class="{{current==2?'on':''}}" data-index="2" bindtap="click">会员客户</view>
+    </view>
     <!-- 详细部分 -->
     <view class="content">
-      <view class="info"  wx:for="{{myMoneyData.brokerageInfos}}" wx:key="{{index}}">
+      <view class="info"  wx:for="{{current==1?myMoneyData.brokerageInfos:hyMoney.brokerageInfos}}" wx:key="{{index}}">
         <!-- 头像 -->
         <image src="../images/icon_money.png"></image>
         <view class="text">
@@ -33,19 +38,27 @@
   import store from '../store/general.js'
 
   createPage({
+    data:{
+      current:1
+    },
     methods: {
-      ...store.mapActions(['getInfo']),
+      ...store.mapActions(['getInfo','getInfoHy']),
       takeMoney(){
         wx.navigateTo({
           url: './myCash'
         })
+      },
+      click(e){
+        this.current = e.currentTarget.dataset.index
+        console.log(this.current)
       }
     },
     computed: {
-      ...store.mapState(['cashList','myMoneyData'])
+      ...store.mapState(['cashList','myMoneyData','hyMoney'])
     },
     onLoad () {
       this.getInfo()
+      this.getInfoHy()
     }
   })
 </script>
@@ -79,6 +92,23 @@
         margin-top:30rpx;
         color:white;
         border-radius: 50%;
+      }
+    }
+    .title{
+      display: flex;
+      height: 88rpx;
+      line-height: 88rpx;
+      border-bottom:1rpx solid rgba(227,227,230,1);
+      font-size:40rpx;
+      font-family:PingFangSC-Medium;
+      font-weight:600;
+      color:rgba(153,153,153,1);
+      background:rgba(255,255,255,1);
+      box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
+      border-radius:21rpx;
+      margin-top: 20rpx;
+      .on{
+        color:rgba(255,107,121,1);
       }
     }
     .content{

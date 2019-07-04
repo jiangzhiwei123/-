@@ -25,12 +25,20 @@ import store from './general';
     // 当前的年份
     newYear:2019,
     // 更新团队成员数据
-    myTeamData:[]
+    myTeamData:[],
+    // 用户数据
+    personInData:[],
+    // 会员部分佣金明细
+    hyMoney:[]
   }
   const mutations= {
     // 改变当前年份
     reduceYear(state){
       state.newYear--
+    },
+    // 更新会员部分money明细
+    updateHy(state,t){
+      state.hyMoney=t
     },
     addYear(state){
       state.newYear++
@@ -73,6 +81,10 @@ import store from './general';
     updateMyTeam(state,t){
       state.myTeamData=t
     },
+    // 更新用户数据
+    updatePersonData(state,t){
+      state.personInData=t
+    },
     // 清空lalal
     clearLalal(state){
       state.lalal=[]
@@ -82,6 +94,7 @@ import store from './general';
     }
 
   }
+  // http://101.200.63.32:8082/matchmaker/getDetail/{id}
   const getters = {}
   const actions = {
     // 查看红娘用户信息
@@ -113,6 +126,15 @@ import store from './general';
       console.log(99999999999999,res)
       console.log(999999999999,res.data.rows)
     },
+    // 会员部分参数明细
+    async getInfoHy(context){
+      const res = await Http.get({
+        url:`/matchmaker/myBrokeragesMember/${wx.getStorageSync('matchId')}`,
+      })
+      context.commit('updateHy',res.data.rows)
+      console.log(99999999999999,res)
+      console.log(999999999999,res.data.rows)
+    },
     // 查询我的提现明细
     async getCashDetail(context){
       const res = await Http.get({
@@ -127,7 +149,7 @@ import store from './general';
         url:`/matchmaker/getmemberBymonth/${memType}/${year}`,
       })
       commit('updateCustomData',res.data.rows)
-      commit('clearArray',[0,0,0,0,0,0,0,0,0,0,0])
+      commit('clearArray',[0,0,0,0,0,0,0,0,0,0,0,0])
       for(let i in res.data.rows){
         // console.log(res.data.rows[i].registerDate.slice(5,7))
         state.lalal.push(res.data.rows[i].registerDate.slice(5,7).replace(/\b(0+)/gi,""))
@@ -168,6 +190,28 @@ import store from './general';
       })
       commit('updateMyTeam',res.data.rows)
       console.log(5555544446666,res.data.rows)
+    },
+    // 根据id查看详细信息
+    async getPersonData({commit}){
+      const res = await Http.post({
+        url:`/matchmaker/getDetail/${wx.getStorageSync('matchId')}`
+      })
+      commit('updatePersonData',res.data.rows)
+      console.log(999666999666,res.data.rows)
+    },
+    // 获取openid
+    async getOpenid({commit},{JSCODE}){
+      const res = await Http.post({
+        // http://101.200.63.32:8082/matchmaker/getOpenId 
+        url:`/matchmaker/getOpenId`,
+        data:{
+          APPID:'wx9e4ffe724ae08e0b',
+          SECRET:'0e386d892fbafb2090d6dde4629fffba',
+          JSCODE
+        }
+      })
+      // commit('updatePersonData',res.data.rows)
+      console.log(44444444444444444455555555,json.parse(res.data.row))
     }
     // async getCodeStore(context,tel){
     //   const res = await Http.get({

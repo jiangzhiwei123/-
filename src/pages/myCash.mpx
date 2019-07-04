@@ -124,7 +124,7 @@
   }
 </style>
 
-<script type="application/json">
+<script type="application/json" lang='json'>
   {
     "usingComponents": {
     },

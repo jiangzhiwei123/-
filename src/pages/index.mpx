@@ -11,11 +11,11 @@
     <view class="money">
       <view class="myCustom" bindtap="jumpMyCustom">
         <view>我的客户</view>
-        <view>{{totle}}<text>人</text></view>
+        <view>{{personInData.myCustomerNumber}}<text>人</text></view>
       </view>
       <view class="myMoney" bindtap="jumpMyMoney">
         <view>我的佣金</view>
-        <view>{{myMoneyData.canAmount}}<text>元</text></view>
+        <view>{{personInData.brokerageAmountSum}}<text>元</text></view>
       </view>
     </view>
     <!-- 路由跳转部分 -->
@@ -79,10 +79,10 @@
       thisHeight:Number
     },
     computed: {
-      ...store.mapState(['cashList','totle','myMoneyData','customData','num','totle']),
+      ...store.mapState(['cashList','totle','myMoneyData','customData','num','totle','personInData']),
     },
     methods: {
-      ...store.mapActions(['getInformation','getCustom','getInfo']),
+      ...store.mapActions(['getInformation','getCustom','getInfo','getPersonData']),
       ...store.mapMutations(['updateAll','updateAll']),
       // 点击下面图标部分
       click(e){
@@ -148,6 +148,8 @@
       })
       // 计算出总客户数
       this.updateAll()
+      // 获取个人信息
+      this.getPersonData()
     },
     onshow () {
       this.current = 1

@@ -178,7 +178,7 @@
     .title{
       margin: 0 auto;
       width:190rpx;
-      font-size:48rpx;
+      font-size:47rpx;
       font-family:PingFangSC-Medium;
       font-weight:500;
       color:white;
