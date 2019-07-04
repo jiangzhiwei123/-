@@ -1,0 +1,160 @@
+<template>
+  <view class="task">
+    <view class="content">
+      <view class="info"  wx:for="{{gkList}}" wx:key="{{index}}">
+        <view class="text">
+          <view>{{item.customerName}}</view>
+          <view>ID:{{item.memberId}}</view>
+          <view>联系电话:{{item.customerPhone}}</view>
+          <view>注册时间:{{item.registerDate}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import { createPage } from '@mpxjs/core'
+  import store from '../store/general.js'
+  createPage({
+    data:{
+      // 月份
+      month:Number
+    },
+    methods: {
+      ...store.mapActions(['getCustom','getInfo','takeGkList']),
+      ...store.mapMutations(['updatePic','clearGkList','clearPage'])
+    },
+    computed: {
+      ...store.mapState(['myMoneyData','gkList','page'])
+    },
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom: function () {
+      // 显示加载图标
+      wx.showLoading({
+        title: '玩命加载中',
+      })
+      this.updatePic(1)
+      // console
+      this.takeGkList({like_customerName:this.month,matchId:121,pageSize:10,pageNo:this.page})
+      // console.log(555555555555555,this.pageCount)
+      // // 调用请求函数 如果当前页数小于总页数
+      // if(this.pageCount<this.totalPage){
+      //   // this.isConcat=true
+      //   this.updateLoading(true)
+      //   // 页数增加
+      //   this.updatePage(1)
+      //   this.activePro({name:this.clickType, id:this.addressCode,rows:10,page:this.pageCount})
+      //   // this.moveList = this.moveList.concat(this.simpleList)
+      //   this.isMore = true
+      // }else{
+      //   // 是加载
+      //   this.updateLoading(true)
+      //   // this.isMore =true
+      // }
+      wx.hideLoading()
+    },
+    async onLoad (options) {
+      this.clearGkList()
+      this.clearPage()
+      console.log(444444,options.index)
+      this.month = Number(options.index)+1
+      this.getInfo()
+      await this.takeGkList({like_customerName:(Number(options.index)+1),matchId:121,pageSize:10,pageNo:this.page})
+    }
+  })
+</script>
+<style lang="less" scoped>
+  .task{
+    width: 750rpx;
+    background: white;
+    padding: 23rpx 32rpx;
+    .money{
+      box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
+      width: 686rpx;
+      height: 276rpx;
+      padding: 37rpx 32rpx;
+      display: flex;
+      font-size: 48rpx;
+      border-radius: 21rpx;
+      .text{
+        display: flex;
+        flex-direction: column;
+        // margin-right: 86rpx;
+        flex:1;
+      }
+      .cashButton{
+        
+        width: 120rpx;
+        height: 120rpx;
+        line-height: 120rpx;
+        text-align: center;
+        font-size: 48rpx;
+        background: #FF6B79;
+        margin-top:30rpx;
+        color:white;
+        border-radius: 50%;
+      }
+    }
+    .content{
+      .info{
+        box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
+        padding: 40rpx 32rpx;
+        width: 686rpx;
+        margin: 23rpx auto;
+        border-radius: 24rpx;
+        display: flex;
+         image{
+          width: 120rpx;
+          height: 120rpx;
+          border-radius: 50%;
+          margin-right: 16rpx;
+        }
+        .text{
+          flex:1;
+          font-size: 40rpx;
+          view{
+            &:nth-of-type(1){
+              color:black;
+              font-weight: Semibold;
+              margin-top: 8rpx;
+              margin-bottom: 20rpx;
+            }
+            &:nth-of-type(2){
+              color:#666666;
+              font-weight: Semibold;
+              margin-bottom: 35rpx;
+            }
+            &:nth-of-type(3){
+              color:black;
+              font-weight: Semibold;
+              margin-bottom: 20rpx;
+            }
+            &:nth-of-type(4){
+              color:black;
+              font-weight: Semibold;
+              margin-bottom: 20rpx;
+            }
+            &:nth-of-type(5){
+              color:#FF8E1F;
+              font-weight: Semibold;
+            }
+          }
+        }
+      }
+     
+    }
+  }
+</style>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+    },
+    "navigationBarTitleText": "分销人员",
+    "navigationBarBackgroundColor":"#FF6B79",
+    "navigationBarTextStyle":"white"
+  }
+</script>

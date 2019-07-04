@@ -2,7 +2,7 @@
   <view class="cashPage">
     <!-- 提现金额 -->
     <view class="take">
-      <view class="can">可提现金额:<text style="color:#FF6B79;">{{cashList.rows.canAmount}}元</text></view>
+      <view class="can">可提现金额:<text style="color:#FF6B79;">{{myMoneyData.canAmount}}元</text></view>
       <view class="inputBox">
         <view>￥</view>
         <view>
@@ -24,20 +24,22 @@
   createPage({
     data:{
       // number:Number,
-      moneyValue:''
+      moneyValue:'',
+      // 账户
+      account:''
     },
     methods: {
-      ...store.mapActions(['takeMoney']),
+      ...store.mapActions(['takeMoney','getInfo']),
     },
     computed: {
-      ...store.mapState(['cashList']),
+      ...store.mapState(['cashList','myMoneyData']),
     },
     getNumber(e){
       this.moneyValue = e.detail.value
       console.log(this.number)
     },
     allMoney(){
-      this.moneyValue = this.cashList.rows.canAmount
+      this.moneyValue = this.myMoneyData.canAmount
     },
     isSure(){
       var _this = this
@@ -47,14 +49,27 @@
         success (res) {
           if (res.confirm) {
             console.log('用户点击确定')
-            _this.takeMoney()
+           _this.takeMoney({matchmakerId:_this.cashList.id,putType:_this.cashList.authInfo.authType,putAmount:_this.moneyValue,matchPhone:_this.cashList.matchmakerTel,wechartAccount:_this.account})
+           wx.navigateBack({
+              delta: 1
+            })
           }else if (res.cancel) {
             console.log('用户点击取消')
           }
         }
       })
     },
-    onLoad () {}
+    onLoad () {
+      this.getInfo()
+      if(this.cashList.authInfo.authType=='1'){
+        console.log(123)
+        this.account=this.cashList.payAccount
+      }else if(this.cashList.authInfo.authType=='2'){
+        console.log(456)
+        this.account=this.cashList.wechartAccount
+        console.log(this.cashList.wechartAccount)
+      }
+    }
   })
 </script>
 <style lang="less" scoped>

@@ -74,7 +74,7 @@
 <style lang="less" scoped>
   .loginPage{
     width: 750rpx;
-    height: 1180rpx;
+    height: 1208rpx;
     background: url("../images/icon_register_bg.png") 0 0 no-repeat;
     background-size: 100% 100%;
     padding-top: 19rpx;

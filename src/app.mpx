@@ -27,6 +27,8 @@
       "./pages/cashDetail",
       "./pages/baseInfo",
       "./pages/informate",
+      "./pages/task",
+      "./pages/myTeam",
       "./pages/myCustom"
     ],
      "window": {

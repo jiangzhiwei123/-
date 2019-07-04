@@ -1,10 +1,6 @@
 <template>
   <view class="custom">
     <!-- title部分 -->
-    <view class="title">
-      <view class="{{current==1?'on':''}}" data-index="1" bindtap="click" style="margin-left:156rpx;margin-right:138rpx;">家长客户</view>
-      <view class="{{current==2?'on':''}}" data-index="2" bindtap="click">会员客户</view>
-    </view>
     <!-- 主题内容部分 -->
     <view class="content">
       <!-- 头部 -->
@@ -23,42 +19,7 @@
         </view>
       </view>
     </view>
-    <!-- 邀请更多客户部分按钮 -->
-    <button class="btn" bindtap="showMeng">邀请更多客户</button>
-    <!-- 蒙层部分 -->
-    <view class="meng {{isShow?'show':'hide'}}" >
-      <!-- 分享的内容 -->
-      <view class="bottom">
-        <view class="top">
-          <view class="first" bindtap="showPic">
-            <image src="../images/icon_lailaihunlian.png"></image>
-            <view>莱莱婚恋</view>
-          </view>
-          <view class="second" bindtap="showPic">
-            <image src="../images/icon_lialiajiazhang.png"></image>
-            <view>莱莱家长</view>
-          </view>
-        </view>
-        <view class="bot" bindtap="del">
-          取消
-        </view>
-      </view>
-    </view>
-    <!-- 分享部分蒙层 -->
-    <view class="meng {{isShare?'show':'hide'}}">
-      
-    </view>
-    <view class="pic {{isShare?'show':'hide'}}">
-        <!-- 头部文字 -->
-        <view class="head">保存图片分享给好友,好友下载办理会员后即可分佣!</view>
-        <image src="../images/icon_poster_hunlian.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==1?'show':'hide'}}"></image>
-        <image src="../images/icon_poster_jiazhang.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==2?'show':'hide'}}"></image>
-        <image src="../images/icon_poster_hongliang.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==3?'show':'hide'}}"></image>
-        <!-- 保存图片按钮 -->
-        <button class="keepBtn" bindtap="savePic">保存图片</button>
-        <!-- 叉掉的按钮 -->
-        <image src="../images/icon_cloose.png" style="width:64rpx;height:64rpx;" class="del" bindtap="delPic"></image>
-      </view>
+ 
   </view>
 </template>
 
@@ -134,6 +95,8 @@
   .custom{
     background: white;
     padding-bottom: 212rpx;
+    padding-top: 32rpx;
+    height: 1206rpx;
     // 蒙层
     .meng{
       position: fixed;
@@ -205,7 +168,7 @@
     }
     .content{
       // padding:32rpx 36rpx;
-      margin: 32rpx auto 160rpx;;
+      margin: 0 auto 160rpx;;
       width: 678rpx;
       background:rgba(255,255,255,1);
       box-shadow:0px 2rpx 18rpx 6rpx rgba(215,215,219,0.71);

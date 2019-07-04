@@ -67,7 +67,7 @@ export default class Http {
       delete options.header.Authorization
       res = await mpx.xfetch.fetch(options)
     }
-    console.log(978658970, res)
+    // console.log(978658970, res)
     return res
   }
 

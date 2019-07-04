@@ -1,6 +1,7 @@
 import mpx, { createStore } from '@mpxjs/core'
 import Http from "../api/http"
 import user from "./user"
+import store from './general';
 
 
   const state={
@@ -12,9 +13,18 @@ import user from "./user"
     // 我的佣金
     myMoneyData:[],
     // 提现明细数据
-    txData:[]
+    txData:[],
+    // 客户数据
+    customData:[],
+    // 时间
+    lalal:[],
+    // 数量
+    numArray:[],
+    arrayTime:[0,0,0,0,0,0,0,0,0,0,0,0],
+    totle:0
   }
   const mutations= {
+    
     // 更新cashList
     updatePerson(state,t){
       state.cashList=t
@@ -30,8 +40,23 @@ import user from "./user"
     // 用户提现明细的数据
     updateTiXian(state,t){
       state.txData=t
+    },
+    // 用户提现明细的数据
+    updateCustomData(state,t){
+      state.customData=t
+    },
+    // 更新注册时间
+    updateRegisterDate(state,t){
+      state.lalal=t
+    },
+    // 存储用户数量
+    // updateNumber(state,t){
+    //   state.num=t
+    // },
+    // 总客户数
+    updateAll(state,t){
+      state.totle += t
     }
-
   }
   const getters = {}
   const actions = {
@@ -73,20 +98,41 @@ import user from "./user"
       console.log(321321321,res.data)
     },
     // 查询我的客户的信息
-    // async getCustom(context){
-    //   const res = await Http.get({
-    //     url:`/matchmaker/putDetail/${wx.getStorageSync('matchId')}`,
-    //   })
-    //   console.log(55555555,res)
-    // },
-
-    // 支付接口
-    async takeMoney(context){
+    async getCustom({state,commit},month){
       const res = await Http.get({
-        url:`/matchmaker/payment/pay/putforward`
+        url:`/matchmaker/getmemberBymonth/0/${month}`,
+      })
+      commit('updateCustomData',res.data.rows)
+      for(let i in res.data.rows){
+        // console.log(res.data.rows[i].registerDate.slice(5,7))
+        state.lalal.push(res.data.rows[i].registerDate.slice(5,7).replace(/\b(0+)/gi,""))
+        state.arrayTime.splice((state.lalal[i]-1),1,res.data.rows[i].memberNum)
+        state.numArray.push(i)
+        // store.commit('updateAll',res.data.rows[i].memberNum)
+      }
+      // commit('updateAll',5)
+      // commit('updateRegisterDate',state.time)
+      console.log(state.lalal)
+      // context.commit('updateRegisterDate',res.data.rows[0].registerDate.slice(5,7))
+      // const time = 
+      // 刷新数据
+      console.log(888888877777999,res.data.rows)
+    },
+    // 支付接口
+    async takeMoney({commit},{matchmakerId,putType,putAmount,matchPhone,wechartAccount}){
+      const res = await Http.post({
+        url:`/matchmaker/putforward`,
+        // http://101.200.63.32:8082/matchmaker/pay/putforward 
+        data:{
+          matchmakerId,
+          putType,
+          putAmount,
+          matchPhone,
+          wechartAccount
+        }
       })
       console.log(3333333,res)
-    },
+    }
     // async getCodeStore(context,tel){
     //   const res = await Http.get({
     //     url : `/sms/send/${tel}/0`,
