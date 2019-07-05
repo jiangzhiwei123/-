@@ -4,16 +4,16 @@
     <view class="money">
       <!-- 左边 -->
       <view class="text">
-        <view class="have">佣金总额:<text style="color:#FF8E1F;">{{myMoneyData.brokerageAmountSum}}元</text></view>
-        <view class="had">可提现总额:<text style="color:#FF6B79;">{{myMoneyData.canAmount}}元</text></view>
-        <view class="all">已提现总额:<text>{{myMoneyData.aleryAmountSum}}元</text></view>
+        <view class="have">佣金总额:<text style="color:#FF8E1F;">{{myMoneyData.brokerageAmountSum?myMoneyData.brokerageAmountSum:0}}元</text></view>
+        <view class="had">可提现总额:<text style="color:#FF6B79;">{{myMoneyData.canAmount?myMoneyData.canAmount:0}}元</text></view>
+        <view class="all">已提现总额:<text>{{myMoneyData.aleryAmountSum?myMoneyData.aleryAmountSum:0}}元</text></view>
       </view>
       <!-- 右边 -->
       <view class="cashButton" bindtap="takeMoney">提现</view>
     </view>
     <!-- 我的佣金明细 -->
     <view class="title">
-      <view class="{{current==1?'on':''}}" data-index="1" bindtap="click" style="margin-left:156rpx;margin-right:138rpx;">家长客户</view>
+      <view class="{{current==1?'on':''}}" data-index="1" bindtap="click" >家长客户</view>
       <view class="{{current==2?'on':''}}" data-index="2" bindtap="click">会员客户</view>
     </view>
     <!-- 详细部分 -->
@@ -95,6 +95,7 @@
       }
     }
     .title{
+      justify-content: space-around;
       display: flex;
       height: 88rpx;
       line-height: 88rpx;

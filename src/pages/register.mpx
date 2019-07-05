@@ -116,7 +116,7 @@
             showCancel:false,
           })
         }else{
-          this.registerEvent(this.tel,this.code,this.password)
+          this.registerEvent(this.tel,this.code,this.password.toLowerCase())
         }
         
       },

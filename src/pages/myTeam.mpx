@@ -12,8 +12,8 @@
       <!-- 主体部分 -->
       <view class="body">
         <view class="month" id="{{monthCurrent==index?'active':''}}" wx:for="{{12}}" wx:key="{{index}}" bindtap="change" data-num="{{index}}">
-          <view class="number" id="{{monthCurrent==index?'white':''}}" wx:if="{{(newYear!='2019')||(newYear=='2019')&&(index<nowTime)}}"><text id="{{monthCurrent==index?'white11':''}}">{{arrayTime[index]}}</text>人</view>
-          <view class="mon {{(newYear=='2019'&(index>nowTime||index==nowTime))?'right':''}}" id="{{monthCurrent==index?'white22':''}}" >{{index+1}}月</view>
+          <view class="number" id="{{monthCurrent==index?'white':''}}" wx:if="{{(newYear<nowYear)||(newYear==nowYear)&&(index<nowTime)}}"><text id="{{monthCurrent==index?'white11':''}}">{{arrayTime[index]}}</text>人</view>
+          <view class="mon {{((newYear==nowYear)&(index>nowTime||index==nowTime))||(newYear>nowYear)?'right':''}}" id="{{monthCurrent==index?'white22':''}}" >{{index+1}}月</view>
           <!-- <view wx:if="{{index>nowTime||index==nowTime}}" style="background:pink;width: 144rpx;
           height: 144rpx;z-index:99;" class="mengban"></view> -->
         </view>
@@ -39,6 +39,7 @@
       // arrayTime:[0,0,0,0,0,0,0,0,0,0,0,0],
       can:false,
       nowTime:'',
+      nowYear:'',
       thisHeight:Number
     },
     computed: {
@@ -79,6 +80,7 @@
         // 时间
         // .slice(5,7).replace(/\b(0+)/gi
         this.nowTime = new Date().getMonth()+1
+        this.nowYear = new Date().getFullYear()
         console.log(5656545458585353,this.nowTime)
 
         // this.time = this.customData

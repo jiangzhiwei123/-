@@ -29,7 +29,8 @@ import store from './general';
     // 用户数据
     personInData:[],
     // 会员部分佣金明细
-    hyMoney:[]
+    hyMoney:[],
+    openIdData:wx.getStorageSync('openIdData'),
   }
   const mutations= {
     // 改变当前年份
@@ -50,6 +51,10 @@ import store from './general';
     // 分销佣金数据
     updateCash(state,t){
       state.fenXiao=t
+    },
+    // 更新openid
+    updateId(state,t){
+      state.openIdData=t
     },
     // 我的佣金数据
     updateMyMoney(state,t){
@@ -91,8 +96,12 @@ import store from './general';
     },
     clearArray(state,t){
       state.arrayTime=t
+    },
+    // 更新openid
+    updateOpenid(state, t) {
+      state.openIdData = t
+      wx.setStorageSync('openIdData', t)
     }
-
   }
   // http://101.200.63.32:8082/matchmaker/getDetail/{id}
   const getters = {}
@@ -200,18 +209,18 @@ import store from './general';
       console.log(999666999666,res.data.rows)
     },
     // 获取openid
-    async getOpenid({commit},{JSCODE}){
+    async getOpenid({commit},{jscode}){
       const res = await Http.post({
         // http://101.200.63.32:8082/matchmaker/getOpenId 
         url:`/matchmaker/getOpenId`,
         data:{
-          APPID:'wx9e4ffe724ae08e0b',
-          SECRET:'0e386d892fbafb2090d6dde4629fffba',
-          JSCODE
+          appId:'wx9e4ffe724ae08e0b',
+          secret:'0e386d892fbafb2090d6dde4629fffba',
+          jscode
         }
       })
-      // commit('updatePersonData',res.data.rows)
-      console.log(44444444444444444455555555,json.parse(res.data.row))
+      commit('updateOpenid',JSON.parse(res.data.rows).openid)
+      console.log(44444444444444444455555555,JSON.parse(res.data.rows).openid)
     }
     // async getCodeStore(context,tel){
     //   const res = await Http.get({

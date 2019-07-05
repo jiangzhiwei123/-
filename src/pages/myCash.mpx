@@ -33,7 +33,7 @@
       ...store.mapActions(['takeMoney','getInfo']),
     },
     computed: {
-      ...store.mapState(['cashList','myMoneyData']),
+      ...store.mapState(['cashList','myMoneyData','openIdData']),
     },
     getNumber(e){
       this.moneyValue = e.detail.value
@@ -43,14 +43,27 @@
       this.moneyValue = this.myMoneyData.canAmount
     },
     isSure(){
-      var _this = this
+      if(this.myMoneyData.canAmount<this.moneyValue){
+        console.log("超过了呀哈哈哈哈")
+        wx.showModal({
+        title: '提示',
+        content: '当前余额不足,无法提现',
+        showCancel:false,
+        success (res) {
+          if (res.confirm) {
+            console.log('用户点击确定')
+          }
+        }
+      })
+      }else{
+        var _this = this
       wx.showModal({
         title: '提示',
         content: '是否确定提现',
         success (res) {
           if (res.confirm) {
             console.log('用户点击确定')
-           _this.takeMoney({matchmakerId:_this.cashList.id,putType:_this.cashList.authInfo.authType,putAmount:_this.moneyValue,matchPhone:_this.cashList.matchmakerTel,wechartAccount:_this.account,openId:'ovy8C5UcvKg9Heq2CMNhV0LFOM24'})
+           _this.takeMoney({matchmakerId:_this.cashList.id,putType:_this.cashList.authInfo.authType,putAmount:Number(_this.moneyValue),matchPhone:_this.cashList.matchmakerTel,wechartAccount:_this.account,openId:_this.openIdData})
            wx.navigateBack({
               delta: 1
             })
@@ -59,6 +72,8 @@
           }
         }
       })
+      }
+      
     },
     async onLoad () {
       this.getInfo()
@@ -94,7 +109,7 @@
       box-shadow:0rpx 4rpx 10rpx 8rpx rgba(215,215,219,0.31);
       border-radius:21rpx;
       padding:78rpx 32rpx;
-      font-size: 46rpx;
+      font-size: 45rpx;
       margin-bottom: 81rpx;
       .can{
         margin-bottom: 69rpx;

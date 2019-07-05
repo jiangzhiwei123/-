@@ -3,7 +3,8 @@
     <view class="box">
       <view class="item">
         <view>姓名</view>
-        <view>{{cashList.nickName}}</view>
+        <input type="text" value="{{cashList.nickName}}" style="text-align:right;" bindblur="upnewName">
+        <!-- <view>{{cashList.nickName}}</view> -->
       </view>
       <!-- 现居地 -->
       <view class="cu-form-group" style=" border-bottom:1px solid rgba(227,227,230,1);height:120rpx;">
@@ -16,11 +17,13 @@
       </view>
       <view class="item">
         <view>手机号</view>
-        <view>{{cashList.matchmakerTel}}</view>
+        <input type="text" value="{{cashList.matchmakerTel}}" style="text-align:right;" bindblur="upnewTel">
+        <!-- <view>{{cashList.matchmakerTel}}</view> -->
       </view>
       <view class="item" style="margin:16rpx 0;">
         <view>绑定微信</view>
-        <view>{{cashList.wechartAccount?cashList.wechartAccount:'未绑定'}}</view>
+        <input type="text" value="{{cashList.wechartAccount?cashList.wechartAccount:'未绑定'}}" style="text-align:right;" bindblur="upnewWx">
+        <!-- <view>{{cashList.wechartAccount?cashList.wechartAccount:'未绑定'}}</view> -->
       </view>
       <!-- 分享给好友 -->
       <view class="item" style="margin:16rpx 0;">
@@ -75,7 +78,8 @@
       date: '请选择地区',
       isShare:false,
       // 图片的下表
-      picIndex:Number
+      picIndex:Number,
+      name:''
     },
     async onLoad () {
       this.getInformation()
@@ -90,10 +94,37 @@
       })
     },
     computed: {
-      ...store.mapState(['cashList']),
+      ...store.mapState(['cashList','hnName','hnTel','hnWx']),
     },
     methods: {
-      ...store.mapActions(['getInformation']),
+      ...store.mapMutations(['upName','upTel','upWx']),
+      // 更新名字
+      upnewName(e){
+        console.log(5555555555559999999999,e.detail.value)
+        this.upName(e.detail.value)
+        this.updateHn({name:this.hnName==''?this.cashList.nickName:this.hnName,tel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,weChat:this.hnWx==''?this.cashList.wechartAccount:this.hnWx})
+      },
+      upnewTel(e){
+        console.log(5555555555559999999999,e.detail.value)
+        this.upTel(e.detail.value)
+        this.updateHn({name:this.hnName==''?this.cashList.nickName:this.hnName,tel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,weChat:this.hnWx==''?this.cashList.wechartAccount:this.hnWx})
+      },
+      upnewWx(e){
+        console.log(5555555555559999999999,e.detail.value)
+        this.upWx(e.detail.value)
+        this.updateHn({name:this.hnName==''?this.cashList.nickName:this.hnName,tel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,weChat:this.hnWx==''?this.cashList.wechartAccount:this.hnWx})
+      },
+      // // 更新手机
+      // upTel(e){
+      //   console.log(e)
+      //   this.upTel(e.detail.value)
+      // },
+      // // 更新微信
+      // upWx(e){
+      //   console.log(e)
+      //   this.upWx(e.detail.value)
+      // },
+      ...store.mapActions(['getInformation','updateHn']),
       // 关闭图片
       delPic(){
         this.isShare = false

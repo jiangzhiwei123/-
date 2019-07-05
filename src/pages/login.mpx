@@ -50,7 +50,9 @@
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
           console.log(444444444,res)
           this.loginEvent({username:this.phone,password:this.password.toLowerCase(),code:res.code})
-          this.getOpenid({JSCODE:res.code})
+          // this.getOpenid({jscode:res.code})
+
+          console.log("有没有运行到我这里")
         }
       })
         

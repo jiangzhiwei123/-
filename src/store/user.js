@@ -5,9 +5,27 @@ import store from './general'
 const state={
   code:'',
   token:wx.getStorageSync('token'),
-  matchId:wx.getStorageSync('matchId')
+  matchId:wx.getStorageSync('matchId'),
+  // 红娘名字
+  hnName:'',
+  // 红娘电话
+  hnTel:'',
+  // 红娘微信
+  hnWx:''
 }
 const mutations= {
+  // 更新红娘姓名
+  upName(state,t){
+    state.hnName = t
+  },
+  // 更新dianhua
+  upTel(state,t){
+    state.hnTel = t
+  },
+  // 更新weixin 
+  upWx(state,t){
+    state.hnWx = t
+  },
   upCode(state,t){
     state.code = t
   },
@@ -21,6 +39,7 @@ const mutations= {
     state.matchId = t
     wx.setStorageSync('matchId', t)
   },
+
 }
 const actions = {
   // 获取验证码
@@ -92,6 +111,18 @@ const actions = {
       }
     })
     console.log(11111111111111111, res)
+  },
+  // 完善红娘信息
+  async updateHn({commit},{name,tel,weChat}){
+    const res = await Http.post({
+      url : `/matchmaker/upMatchBasic`,
+      data:{
+        name,
+        tel,
+        weChat
+      }
+    })
+    // context.commit('upCode',res)
   }
   // const res = await Http.get({ url: '/notice/loadNewNotice' })
   // async changeCollect(context) {
