@@ -190,6 +190,24 @@ import store from './general';
           openId
         }
       })
+      if(res.data.code=="02"){
+        wx.showModal({
+          title: '提示',
+          content: '提现失败',
+          showCancel:false,
+          success (res) {
+            if (res.confirm) {
+      
+            }else if (res.cancel) {
+              console.log('用户点击取消')
+            }
+          }
+        })
+      }else{
+        wx.navigateBack({
+          delta: 1
+        })
+      }
       console.log(3333333,res)
     },
     // 查看我的团队人员

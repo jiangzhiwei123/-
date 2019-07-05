@@ -6,12 +6,13 @@
     <view class="content">
       <!-- 输入手机号部分 -->
       <view class="line">
-        <input type="text" placeholder="请输入手机号" placeholder-style="color:#333;font-weight:500;" bindinput="getTel"/>
+        <input type="text" placeholder="请输入手机号"  bindinput="getTel" placeholder-style="color:#333;" />
       </view>
       <!-- 设置密码部分 -->
       <view class="line" style="display:flex;justify-content:space-between;margin-bottom:42rpx;">
-        <input type="{{isLook?'text':'password'}}" placeholder="请输入密码" placeholder-style="color:#333;font-weight:500;" bindinput='getPassword' />
-        <image src="../images/可视.png" style="width:56rpx;height:56rpx;" bindtap="changeLook"></image>
+        <input type="text" placeholder="请输入密码"  bindinput='getPassword' wx:if="{{isLook}}" value="{{passwordValue}}" placeholder-style="color:#333;" />
+        <input type="password" placeholder="请输入密码"  bindinput='getPassword' wx:if="{{!isLook}}"  value="{{passwordValue}}" placeholder-style="color:#333;" />
+        <image src="../images/canSee.png" style="width:56rpx;height:56rpx;" bindtap="changeLook"></image>
       </view>
       <!-- 注册按钮 -->
       <button class="logBtn btnStyle" style="margin-bottom:23rpx;line-height:88rpx;" bindtap="toLogin">登录</button>
@@ -21,10 +22,14 @@
         <button class="btnStyle" style="width:216rpx;" bindtap="jumpRegister">立即注册</button>
       </view>
       <!-- 绑定微信 -->
-      <view class="wxBind">
-        <image src="../images/icon_wechat.png" style="width:76rpx;height:76rpx;"></image>
-        <view class="text">绑定微信</view>
-      </view>
+      <!-- <view class="wxBind" bindtap="bindWx">
+         <button open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="bindWx" class="btn">
+            绑定微信
+         </button>
+        <image src="../images/icon_wechat.png" style="width:76rpx;height:76rpx;"></image> -->
+        <!-- <view class="text">绑定微信</view> -->
+      <!-- </view> -->
+     
     </view>
   </view>
 </template>
@@ -39,9 +44,19 @@
         phone:Number,
         password:'',
         isLook:false,
-        thisHeight:Number
+        thisHeight:Number,
+        // 密码
+        passwordValue:''
     },
     methods: {
+      bindWx(){
+        console.log(2222+"哈哈")
+        wx.getUserInfo({
+        success: function(res) {
+          console.log(res)
+        }
+      })
+      },
       ...store.mapActions(['loginEvent','getOpenid']),
       // 登录
       toLogin(){
@@ -50,7 +65,7 @@
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
           console.log(444444444,res)
           this.loginEvent({username:this.phone,password:this.password.toLowerCase(),code:res.code})
-          // this.getOpenid({jscode:res.code})
+          this.getOpenid({jscode:res.code})
 
           console.log("有没有运行到我这里")
         }
@@ -73,6 +88,8 @@
         console.log(this.phone)
       },
       getPassword(e){
+        // 用户看到的密码可视用的值
+        this.passwordValue = e.detail.value
         this.password = md5Reg.md5(e.detail.value)
       }
     },
@@ -91,6 +108,12 @@
 </script>
 
 <style lang="less" scoped>
+.btn{
+    width: 76rpx;
+    height: 76rpx;
+    background: url("../images/icon_wechat.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+}
   .loginPage{
     width: 750rpx;
     // height: 1258rpx;

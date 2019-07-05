@@ -18,7 +18,7 @@
       <!-- 生日日期 -->
       <view class="cu-form-group">
         <view class="title">生日<text style="color:#FF6B79;">*</text></view>
-        <picker mode="date" value="{{date}}" start="2015-09-01" end="2020-09-01" bindchange="DateChange">
+        <picker mode="date" value="{{date}}" start="1970-01-01" end="{{nowTime}}" bindchange="DateChange">
           <view class="picker">
             {{date}}
           </view>
@@ -121,9 +121,13 @@
         height:'',
         educational:'',
         thisHeight:Number
-      }
+      },
+      nowTime:''
     },
     async onLoad () {
+      // 获取此时的日期
+      this.nowTime = this.nowYear = new Date().toLocaleDateString()
+      console.log("现在的日期是"+this.nowTime)
       this.initValidate()
       var _this =this
         await wx.getSystemInfo({
@@ -239,7 +243,19 @@
               this.showModal(error)
               return false
           }else{
-            this.changeInforma({name:this.form.name,sex:this.sex[this.sexIndex],birthday:this.date ,idNumber:this.form.idNumber,phone:this.form.phone,wehcart:this.form.wehcart,qqNumber:this.form.qqNumber,monthlyIncomde:this.picker[this.index],height:this.form.height,educational:this.study[this.studyIndex] })
+            var _this = this
+             wx.showModal({
+            title: '提示',
+            content: '是否确定保存',
+            success (res) {
+              if (res.confirm) {
+                _this.changeInforma({name:_this.form.name,sex:_this.sex[_this.sexIndex],birthday:_this.date,idNumber:_this.form.idNumber,phone:_this.form.phone,wehcart:_this.form.wehcart,qqNumber:_this.form.qqNumber,monthlyIncomde:_this.picker[_this.index],height:_this.form.height,educational:_this.study[_this.studyIndex] })
+              }else if (res.cancel) {
+                console.log('用户点击取消')
+              }
+            }
+          })
+            
             //   // // console.log(this.isJump)
               // this.showModal({
               //     msg: '提交成功',

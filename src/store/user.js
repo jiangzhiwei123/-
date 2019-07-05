@@ -110,6 +110,22 @@ const actions = {
         educational
       }
     })
+    if(res.data.code=="01"){
+      wx.showModal({
+        title: '提示',
+        content: '保存成功',
+        showCancel:false,
+        success (res) {
+          if (res.confirm) {
+            wx.navigateBack({
+              delta: 1
+            })
+          }else if (res.cancel) {
+            console.log('用户点击取消')
+          }
+        }
+      })
+    }
     console.log(11111111111111111, res)
   },
   // 完善红娘信息

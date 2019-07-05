@@ -64,9 +64,9 @@
           if (res.confirm) {
             console.log('用户点击确定')
            _this.takeMoney({matchmakerId:_this.cashList.id,putType:_this.cashList.authInfo.authType,putAmount:Number(_this.moneyValue),matchPhone:_this.cashList.matchmakerTel,wechartAccount:_this.account,openId:_this.openIdData})
-           wx.navigateBack({
-              delta: 1
-            })
+          //  wx.navigateBack({
+          //     delta: 1
+          //   })
           }else if (res.cancel) {
             console.log('用户点击取消')
           }

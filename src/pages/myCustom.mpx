@@ -30,11 +30,11 @@
       <!-- 分享的内容 -->
       <view class="bottom">
         <view class="top">
-          <view class="first" bindtap="showPic" data-current="1">
+          <view class="first" bindtap="canShare" data-index="1">
             <image src="../images/icon_lailaihunlian.png"></image>
             <view>莱莱婚恋</view>
           </view>
-          <view class="second" bindtap="showPic" data-current="2">
+          <view class="second" bindtap="canShare" data-index="2">
             <image src="../images/icon_lialiajiazhang.png"></image>
             <view>莱莱家长</view>
           </view>
@@ -48,11 +48,14 @@
     <view class="meng {{isShare?'show':'hide'}}">
       
     </view>
+    <view style="position:absolute;top:999999999rpx;width:100%;left:0">
+          <canvas canvas-id="shareCanvas" class="canvas" style="width:100%;height:1344rpx;background:#fff"></canvas> 
+        </view>
+
     <view class="pic {{isShare?'show':'hide'}}">
         <!-- 头部文字 -->
         <view class="head">保存图片分享给好友,好友下载办理会员后即可分佣!</view>
-        <image src="../images/icon_poster_hunlian.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==1?'show':'hide'}}"></image>
-        <image src="../images/icon_poster_jiazhang.png" style="width:352rpx;height:627rpx;" class="photo {{picIndex==2?'show':'hide'}}"></image>
+        <image src="{{img}}" style="width:352rpx;height:627rpx;" class="photo"></image>
         <!-- 保存图片按钮 -->
         <button class="keepBtn" bindtap="savePic">保存图片</button>
         <!-- 叉掉的按钮 -->
@@ -64,6 +67,7 @@
 <script>
   import { createPage } from '@mpxjs/core'
   import store from '../store/general.js'
+  import http from '../api/request.js'
   createPage({
     data:{
       current:0,
@@ -79,7 +83,18 @@
       nowTime:'',
       nowYear:'',
       thisHeight:Number,
-      status:''
+      status:'',
+      imglist:[
+        'https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/poster_hongniang.png',
+        'https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/poster_hunlian.png',
+        'https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/poster_jiazhang.png',
+      ],
+      imgUrl:'',
+      img:'',
+      matchmakerId:Number,
+      codeUrl:'',
+      tempFilePath1:'',
+      tempFilePath2:''
     },
     computed: {
       ...store.mapState(['customData','lalal','arrayTime','newYear','listStatus'])
@@ -150,6 +165,7 @@
         //   return item.memberNum=='2'
         // })
         var _this =this
+        this.matchmakerId = wx.getStorageSync('matchId')
         await wx.getSystemInfo({
           success (res) {
             console.log(res.windowHeight)
@@ -160,7 +176,146 @@
         // console.log(888899999,this.customData[0].registerDate.slice(5,7))
         // console.log(888899999,this.customData[0])
 
-    }
+    },
+    // 点击分享的时候
+      canShare(e){
+        this.isShare = true
+        this.img = ''
+        var that = this
+        wx.showLoading({
+          title: '生成中...',
+          mask: true,
+        });
+        this.picIndex = e.currentTarget.dataset.index
+        this.imgUrl = this.imglist[this.picIndex]
+        wx.downloadFile({
+          url: that.imgUrl,
+          success: function (res) {
+            console.log("res:")
+            console.log(res)
+            that.tempFilePath1 = res.tempFilePath
+            http('share/matchmakerShare',{shareType:that.picIndex,matchmakerId:that.matchmakerId}).then((res1) => {
+              that.codeUrl = res1.data.msg
+              console.log("res1:")
+              console.log(that.codeUrl)
+              wx.downloadFile({
+                url: that.codeUrl,
+                success: function (res2) {
+                  console.log("res2:")
+                  console.log(res2)
+                  that.tempFilePath2 = res2.tempFilePath
+                  that.drawImage()
+                }
+              })
+              
+            })
+          }
+        })
+        
+        
+        
+      },
+      // 点击保存图片
+      savePic() {
+        let that = this;
+        // 获取用户是否开启用户授权相册
+        wx.getSetting({
+          success(res) {
+            // 如果没有则获取授权
+            if (!res.authSetting['scope.writePhotosAlbum']) {
+              wx.authorize({
+                scope: 'scope.writePhotosAlbum',
+                success() {
+                  wx.saveImageToPhotosAlbum({
+                    filePath: that.img,
+                    success() {
+                      wx.showToast({
+                        title: '保存成功'
+                      })
+                    },
+                    fail() {
+                      wx.showToast({
+                        title: '保存失败',
+                        icon: 'none'
+                      })
+                    }
+                  })
+                },
+                fail() {
+                // 如果用户拒绝过或没有授权，则再次打开授权窗口
+                //（ps：微信api又改了现在只能通过button才能打开授权设置，以前通过openSet就可打开，下面有打开授权的button弹窗代码）
+                  that.setData({
+                    openSet: true
+                  })
+                }
+              })
+            } else {
+              // 有则直接保存
+              wx.saveImageToPhotosAlbum({
+                filePath: that.img,
+                success() {
+                  wx.showToast({
+                    title: '保存成功'
+                  })
+                },
+                fail() {
+                  wx.showToast({
+                    title: '保存失败',
+                    icon: 'none'
+                  })
+                }
+              })
+            }
+          }
+        })
+      },
+      setCanvasSize: function (w) {
+        let size = {};
+        let res = wx.getSystemInfoSync();
+        let scale = res.windowWidth / w;
+        let width = 750 * scale;
+        let height = 1334 * scale;
+        size.w = width;
+        size.h = height;
+        return size;
+      },
+      drawImage(){
+        var that = this;
+        var postersize = that.setCanvasSize(750);
+        var ctx = wx.createCanvasContext('shareCanvas')
+        ctx.drawImage(that.tempFilePath1, 0, 0, postersize.w, postersize.h)
+        ctx.draw(true,function(){
+          var res = wx.getSystemInfoSync();
+          var scale = 750 / 160;
+          var width = res.windowWidth / scale;
+          var height = width
+          var leftscale = 750 / 79; // 180为left
+          var left = res.windowWidth / leftscale;
+          var topscale = 750 / 779; // 180为top
+          var top = res.windowWidth / topscale;
+          ctx.drawImage(that.tempFilePath2, left, top, width, height)
+          ctx.draw(true,function(){
+             wx.canvasToTempFilePath({
+              canvasId: 'shareCanvas',
+              destWidth: 750,
+              destHeight: 1334,
+              success: function (res1) {
+                var tempFilePath = res1.tempFilePath;
+                that.img = tempFilePath
+                wx.hideLoading()
+              },
+              fail: function (err) {
+                console.log(err);
+              }
+            });
+          })
+          // setTimeout(() => {
+           
+          // }, 1500);
+        })
+        
+        
+      }
   })
 </script>
 <style lang="less" scoped>
@@ -224,8 +379,8 @@
       position: fixed;
       top:0;
       left:0;
-      width:750rpx;
-      height:1206rpx;
+      width:100vw;
+      height:100vh;
       background:rgba(0,0,0,0.4);
       // opacity:0.2;
       .bottom{
@@ -373,6 +528,7 @@
     },
     "navigationBarTitleText": "我的客户",
     "navigationBarBackgroundColor":"#FF6B79",
-    "navigationBarTextStyle":"white"
+    "navigationBarTextStyle":"white",
+    "disableScroll": true
   }
 </script>
