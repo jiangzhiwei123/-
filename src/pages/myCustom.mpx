@@ -131,10 +131,10 @@
         this.current = e.currentTarget.dataset.index
         // 点击的时候重新刷新数据
         if(this.current=="2"){
-          this.status=""
+          this.status=1
           console.log("我是谁"+this.status)
         }else if(this.current=="0"){
-          this.status=1
+          this.status=""
           console.log("我是谁"+this.status)
         }
         this.getCustom({memType:this.current,year:this.newYear})

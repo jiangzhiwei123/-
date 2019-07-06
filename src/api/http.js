@@ -12,8 +12,8 @@ const safeRedirect = (url = '/pages/login') => {
 // const baseUrl  发起请求
 mpx.xfetch.interceptors.request.use(function (config) {
   // 如果传入的请求是不带域名的话则加上域名以防万一
-  // let base = 'https://cl.lailaihunlian.com'
-  let base = 'http://101.200.63.32:8082'
+  let base = 'https://www.lailaihongniang.com'
+  // let base = 'http://101.200.63.32:8082'
   if (config.url[0] === '/') {
     config.url = base + config.url
   }

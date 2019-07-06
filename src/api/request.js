@@ -1,6 +1,6 @@
 // var Promise = require('./es6-promise.min.js')
 import generalStore from '../store/general'
-const base = 'http://101.200.63.32:8082/'
+const base = 'https://www.lailaihongniang.com/'
 
 
 const http = function (url,data){

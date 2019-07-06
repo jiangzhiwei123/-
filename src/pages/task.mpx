@@ -175,7 +175,7 @@
   {
     "usingComponents": {
     },
-    "navigationBarTitleText": "分销人员",
+    "navigationBarTitleText": "我的客户",
     "navigationBarBackgroundColor":"#FF6B79",
     "navigationBarTextStyle":"white"
   }

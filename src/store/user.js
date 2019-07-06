@@ -53,12 +53,6 @@ const actions = {
   async loginEvent({commit} ,{ username, password,code}){
     console.log(77777888,username)
     console.log(77777888,password)
-    // const code = (await wx.login()).code
-    // wx.login({
-    //   success: res => {
-    //     // 发送 res.code 到后台换取 openId, sessionKey, unionId 
-    //   }
-    // })
     console.log(565656565,code)
     const res = await Http.post({
       url : `/matchmaker/login`,
@@ -90,6 +84,7 @@ const actions = {
     })
     context.commit('upCode',res)
   },
+  // 提交线下信息
   async changeInforma(context, { name, sex, birthday , idNumber , phone  , wehcart ,qqNumber , monthlyIncomde , height , educational }) {
     const res = await Http.post({
       // url: `/saveunderlinember/${name}&${sex}&${birthday}&${idNumber}&${phone}&${qqNumber}&${wehcart}&${monthlyIncomde}&${height}&${educational}`

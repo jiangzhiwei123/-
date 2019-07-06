@@ -2,7 +2,10 @@
   import { createApp } from '@mpxjs/core'
   createApp({
     onLaunch(){
-      // onLaunch: function () {
+      // wx.reLaunch({
+      //   url: './pages/login'
+      // })
+      // onLaunch: function () {                                    
       // 登录
       // wx.login({
       //   success: res => {
@@ -33,10 +36,10 @@
 <script type="application/json">
   {
     "pages": [
+      "./pages/login",
       "./pages/index",
       "./pages/agree",
       "./pages/register",
-      "./pages/login",
       "./pages/myMoney",
       "./pages/myCash",
       "./pages/retail",
