@@ -31,8 +31,14 @@ import store from './general';
     // 会员部分佣金明细
     hyMoney:[],
     openIdData:wx.getStorageSync('openIdData'),
+    // 审核参数
+    isLoginData:Number
   }
   const mutations= {
+    // 改变当前年份
+    updateLogin(state,t){
+      state.isLoginData=t
+    },
     // 改变当前年份
     reduceYear(state){
       state.newYear--
@@ -112,7 +118,7 @@ import store from './general';
         url:`/matchmaker/getMatchGai/${wx.getStorageSync('matchId')}`,
       })
       context.commit('updatePerson',res.data.rows)
-      // console.log(66666666,res)
+      console.log(66666666,res)
       console.log(66666666,res.data.rows)
     },
     // 查询分销佣金明细
@@ -239,6 +245,28 @@ import store from './general';
       })
       commit('updateOpenid',JSON.parse(res.data.rows).openid)
       console.log(44444444444444444455555555,JSON.parse(res.data.rows).openid)
+    },
+    // 获取openid
+    async isLogin({commit,state}){
+      const res = await Http.post({
+        url:`/check/getCheckPage`,
+        data:{
+          "keys":"checkPage"
+        }
+      })
+      commit('updateLogin',res.data.rows)
+      // if(res.data.rows!=0){
+      //   wx.reLaunch({
+      //     url: '../pages/login'
+      //   })
+      // }else{
+      //   wx.reLaunch({
+      //     url: '../pages/shenhe'
+      //   })
+      // }
+      commit('updateLogin',res.data.rows)
+      console.log(44444444444444444455555555,res)
+      console.log(44444444444444444455555555,state.isLoginData)
     }
     // async getCodeStore(context,tel){
     //   const res = await Http.get({

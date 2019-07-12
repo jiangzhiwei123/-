@@ -124,13 +124,15 @@ const actions = {
     console.log(11111111111111111, res)
   },
   // 完善红娘信息
-  async updateHn({commit},{name,tel,weChat}){
+  async updateHn({commit},{nickName,matchmakerTel,wechartAccount,province,city}){
     const res = await Http.post({
       url : `/matchmaker/upMatchBasic`,
       data:{
-        name,
-        tel,
-        weChat
+        nickName,
+        matchmakerTel,
+        wechartAccount,
+        province,
+        city
       }
     })
     // context.commit('upCode',res)

@@ -1,29 +1,32 @@
 <script>
   import { createApp } from '@mpxjs/core'
+  import store from './store/general.js'
+  import Http from './api/http.js'
   createApp({
-    onLaunch(){
-      // wx.reLaunch({
-      //   url: './pages/login'
-      // })
-      // onLaunch: function () {                                    
-      // 登录
-      // wx.login({
-      //   success: res => {
-      //     // 发送 res.code 到后台换取 openId, sessionKey, unionId
-      //     wx.request({
-      //       //获取openid接口  
-      //       url: 'http://localhost/openid',
-      //       data: {
-      //         js_code: res.code,
-      //       },
-      //       method: 'POST',
-      //       success: function (res) {
-      //         console.log(res)
-      //       }
-      //     })  
-      //   }
-      // })
-  // }
+    methods: {
+      ...store.mapActions(['isLogin']),
+    },
+    computed: {
+      ...store.mapState(['isLoginData']),
+    },
+    async onLaunch(){
+      // await this.isLogin()
+      const res = await Http.post({
+        url:`/check/getCheckPage`,
+        data:{
+          "keys":"checkPage"
+        }
+      })
+      console.log(88888,res.data.rows)
+      if(res.data.rows=="0"){
+        wx.reLaunch({
+          url: '../pages/shenhe'
+        })
+      }else{
+        wx.reLaunch({
+          url: '../pages/login'
+        })
+      }
     }
   })
 </script>
@@ -36,6 +39,8 @@
 <script type="application/json">
   {
     "pages": [
+      
+      "./pages/shenhe",
       "./pages/login",
       "./pages/index",
       "./pages/agree",
@@ -49,6 +54,7 @@
       "./pages/task",
       "./pages/myTeam",
       "./pages/taskTeam",
+      "./pages/cropper",
       "./pages/myCustom"
     ],
      "window": {

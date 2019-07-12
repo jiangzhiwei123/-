@@ -1,0 +1,163 @@
+<template>
+  <view>
+    <image-cropper id="image-cropper" limit_move="{{true}}" disable_rotate="{{true}}" width="{{250}}"
+                   height="{{250}}" disable_ratio="{{true}}" disable_width="{{true}}" disable_height="{{true}}"
+                   imgSrc="{{src}}" bindload="cropperload"
+                   bindimageload="loadimage"
+    ></image-cropper>
+    <view class="button text-center text-white text-lg" bindtap="startCut">
+      确定
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import { createPage } from '@mpxjs/core'
+  import store from '../store/general.js'
+  import Http from '../api/http.js'
+  var app = getApp();
+  
+  createPage({
+    data: {
+      src: '',
+      userIcon:"",
+      imageType:""
+    },
+    computed: {
+      ...store.mapState(['token'])
+    },
+    onShareAppMessage(res){
+      if (res.from === 'menu') {
+        // 来自页面内转发按钮
+        console.log(res.target)
+      }
+      return {
+        title: '聚校推:聚拢优质企业资源,助力高校精彩活动',
+        path: '/pages/index'
+      }
+    },
+    onLoad(options) {
+      // 获取到image-cropper对象
+      this.cropper = this.selectComponent('#image-cropper')
+      // 开始裁剪
+      this.src = options.src
+      this.imageType = options.imageType
+      this.page = options.page
+      // console.log(options.src)
+      // console.log(options.imageType)
+      // console.log(options.page )
+      wx.showLoading({
+        title: '加载中'
+      })
+    },
+    cropperload(e) {
+      console.log('cropper初始化完成')
+    },
+    loadimage(e) {
+      // console.log('图片加载完成', e.detail)
+      wx.hideLoading()
+      // 重置图片角度、缩放、位置
+      this.cropper.imgReset()
+    },
+    ...store.mapMutations(['addImg','clearImg','addIdentify']),
+    startCut(e) {
+      var _this = this
+      this.cropper.pushImg()
+      this.cropper.getImg((e) => {
+        // console.log(e.url)
+        wx.showLoading({ title: '加载中...' })
+        /**
+         * todo 在这里写图片上传和头像更新，e.url就是本地图片链接
+         */
+          wx.uploadFile({
+            url: `${app.globalData.realm}/upload/uploadFile`, // 仅为示例，非真实的接口地址
+            filePath: e.url,
+            name: 'file',
+            header: {
+              'content-type': 'multipart/form-data;charset=UTF-8',
+              'Authorization' :this.token,
+              'traceId':store.state.traceId
+            },
+            data:{
+
+            },
+            formData: {
+              'file': e.url,
+              'imageType':this.imageType
+            },
+            success(res) {
+              console.log(JSON.parse(res.data).status)
+              console.log(res)
+              if(JSON.parse(res.data).status==1009){
+                wx.hideLoading()
+                wx.showModal({
+                  title: '提示',
+                  content: '文件大小超出限制,请重新上传',
+                  showCancel:false,
+                  success (res) {
+                    if (res.confirm) {
+                      console.log('用户点击确定')
+                      wx.navigateBack({
+                        delta: 1
+                      })
+                    }
+                  }
+                })
+              }
+              _this.userIcon = JSON.parse(res.data).data.imageUrl
+              if(_this.page=="add"){
+                wx.redirectTo({
+                  url: `../pages/imformation?id=2019042010390054605046bac8638du1&userIcon=${_this.userIcon}`
+                })
+              }else if(_this.page=="support"){
+                // 发布需求的时候
+                _this.addImg(_this.userIcon)
+                wx.navigateBack({
+                   delta: 1
+                })
+              }else if(_this.page=="identify"){
+                _this.addIdentify(_this.userIcon)
+                wx.navigateBack({
+                   delta: 1
+                })
+              }
+              
+            }
+          })
+          
+      })
+
+    }
+
+  })
+</script>
+<style lang="less" scoped>
+  .button {
+    /**
+     * 为了兼容webstorm不兼容rpx单位
+     * webpack配置了px转rpx
+     * px会在编译阶段自动替换为rpx
+     */
+    height: 100px;
+    background: #48CFE7;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+      "image-cropper": "../lib/cropper/image-cropper"
+    },
+    "navigationBarTitleText": "裁剪",
+    "navigationBarBackgroundColor":"#FF6B79",
+    "navigationBarTextStyle":"white"
+  }
+</script>

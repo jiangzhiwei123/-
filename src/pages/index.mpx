@@ -2,8 +2,8 @@
   <view class="indexPage" style="height:{{thisHeight}}px;">
     <!-- banner部分 -->
     <view class="bgPic" style="padding-top:50rpx;text-align:center;">
-      <view class="con">
-        <image src="{{cashList.authInfo.imageInfos[0].imageUrl}}" style="width:136rpx;height:136rpx;border-radius:50%;"></image>
+      <view class="con" >
+        <image src="{{cashList.authInfo.imageInfos[0].imageUrl?cashList.authInfo.imageInfos[0].imageUrl:'../images/gzgzh.png'}}" style="width:136rpx;height:136rpx;border-radius:50%;"></image>
         <view class="name">{{cashList.nickName}}</view>
       </view>
     </view>
@@ -84,6 +84,21 @@
     methods: {
       ...store.mapActions(['getInformation','getCustom','getInfo','getPersonData']),
       ...store.mapMutations(['updateAll','updateAll']),
+      // 上传头像
+      // upImg(){
+      //   wx.chooseImage({
+      //       count: 1, // 默认9
+      //       sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+      //       sourceType: ['album'], // 可以指定来源是相册还是相机，默认二者都有
+      //       success: function (res) {
+      //           // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+      //           const src = res.tempFilePaths[0]
+      //           wx.redirectTo({
+      //               url: `../pages/cropper?src=${src}`
+      //           })
+      //       }
+      //   })
+      // },
       // 点击下面图标部分
       click(e){
         this.current = e.currentTarget.dataset.tarcur

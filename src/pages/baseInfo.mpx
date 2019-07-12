@@ -9,9 +9,9 @@
       <!-- 现居地 -->
       <view class="cu-form-group" style=" border-bottom:1px solid rgba(227,227,230,1);height:120rpx;">
         <view class="title" id="style">现居地</view>
-        <picker mode="region" value="{{date}}" start="1970-01-01" end="{{nowTime}}" bindchange="DateChange">
+        <picker mode="region" value="{{date}}"  bindchange="DateChange">
           <view class="picker" id="style">
-            {{date}}
+            {{cashList.province+cashList.city}}
           </view>
         </picker>
       </view>
@@ -99,12 +99,10 @@
       codeUrl:'',
       tempFilePath1:'',
       tempFilePath2:'',
-      nowTime:''
     },
     async onLoad () {
-      this.nowTime = new Date().toLocaleDateString()
       this.getInformation()
-      this.date = (this.cashList.province+this.cashList.matchmakerDesc).replace("省",'').replace("市",'')
+      this.date = (this.cashList.province+this.cashList.city).replace("省",'').replace("市",'')
       var _this =this
       this.matchmakerId = wx.getStorageSync('matchId')
       await wx.getSystemInfo({
@@ -114,6 +112,7 @@
           console.log( _this.thisHeight)
         }
       })
+      console.log("我是onload的时候打印的呀")
     },
     computed: {
       ...store.mapState(['cashList','hnName','hnTel','hnWx']),
@@ -124,17 +123,17 @@
       upnewName(e){
         console.log(5555555555559999999999,e.detail.value)
         this.upName(e.detail.value)
-        this.updateHn({name:this.hnName==''?this.cashList.nickName:this.hnName,tel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,weChat:this.hnWx==''?this.cashList.wechartAccount:this.hnWx})
+        this.updateHn({nickName:this.hnName==''?this.cashList.nickName:this.hnName,matchmakerTel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,wechartAccount:this.hnWx==''?this.cashList.wechartAccount:this.hnWx,province:this.date[0],city:this.date[1]})
       },
       upnewTel(e){
         console.log(5555555555559999999999,e.detail.value)
         this.upTel(e.detail.value)
-        this.updateHn({name:this.hnName==''?this.cashList.nickName:this.hnName,tel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,weChat:this.hnWx==''?this.cashList.wechartAccount:this.hnWx})
+        this.updateHn({nickName:this.hnName==''?this.cashList.nickName:this.hnName,matchmakerTel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,wechartAccount:this.hnWx==''?this.cashList.wechartAccount:this.hnWx,province:this.date[0],city:this.date[1]})
       },
       upnewWx(e){
         console.log(5555555555559999999999,e.detail.value)
         this.upWx(e.detail.value)
-        this.updateHn({name:this.hnName==''?this.cashList.nickName:this.hnName,tel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,weChat:this.hnWx==''?this.cashList.wechartAccount:this.hnWx})
+        this.updateHn({nickName:this.hnName==''?this.cashList.nickName:this.hnName,matchmakerTel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,wechartAccount:this.hnWx==''?this.cashList.wechartAccount:this.hnWx,province:this.date[0],city:this.date[1]})
       },
       // // 更新手机
       // upTel(e){
@@ -248,6 +247,12 @@
       },
       DateChange(e) {
         this.date = e.detail.value
+        this.cashList.province=this.date[0]
+        this.cashList.city=this.date[1]
+        this.updateHn({nickName:this.hnName==''?this.cashList.nickName:this.hnName,matchmakerTel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,wechartAccount:this.hnWx==''?this.cashList.wechartAccount:this.hnWx,province:this.date[0],city:this.date[1]})
+        console.log(this.date[0])
+        console.log(this.date[1])
+        console.log(this.date[2])
       },
       setCanvasSize: function (w) {
         let size = {};

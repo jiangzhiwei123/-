@@ -1,7 +1,13 @@
 <template>
   <view class="loginPage" style="height:{{thisHeight}}px;">
+    <!-- <view class="verify" wx:if="{{isLoginData==0}}">
+      <image class="firPic" src="https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/xcx_intro_1.jpg" mode="widthFix"></image>
+      <image class="secPic" src="https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/xcx_intro_2.jpg"></image>
+      <image class="thirdPic" src="https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/xcx_intro_3.jpg"></image>
+    </view> -->
     <!-- 表单 -->
-    <!-- 莱莱红娘 -->
+    <view wx:if="{{isLoginData!=1}}">
+      <!-- 莱莱红娘 -->
     <view class="title">莱莱红娘</view>
     <view class="content">
       <!-- 输入手机号部分 -->
@@ -31,6 +37,7 @@
       <!-- </view> -->
      
     </view>
+    </view>
   </view>
 </template>
 
@@ -48,6 +55,9 @@
         // 密码
         passwordValue:''
     },
+    computed: {
+      ...store.mapState(['isLoginData']),
+    },
     methods: {
       bindWx(){
         console.log(2222+"哈哈")
@@ -57,7 +67,7 @@
         }
       })
       },
-      ...store.mapActions(['loginEvent','getOpenid']),
+      ...store.mapActions(['loginEvent','getOpenid','isLogin']),
       // 登录
       toLogin(){
         wx.login({
@@ -103,11 +113,27 @@
           console.log( _this.thisHeight)
         }
       })
+      // 打印状态值
+      console.log(55555555555555,this.isLoginData)
     }
   })
 </script>
 
 <style lang="less" scoped>
+.firPic{
+  width: 100vw;
+  height:auto
+  
+}
+.secPic{
+  width: 100vw;
+  height:auto
+}
+.thirdPic{
+  width: 100vw;
+  height:auto
+}
+
 .btn{
     width: 76rpx;
     height: 76rpx;

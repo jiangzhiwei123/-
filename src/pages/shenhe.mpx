@@ -1,0 +1,146 @@
+<template>
+  <view class="loginPage {{isShowPhoto?'indexFixed':''}}" style="height:{{thisHeight}}px;">
+    <view class="verify">
+      <image class="firPic" src="https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/xcx_intro_1.jpg" mode="widthFix"></image>
+      <image class="secPic" src="https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/xcx_intro_2.jpg"  mode="widthFix"></image>
+      <image class="thirdPic" src="https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/xcx_intro_3.jpg" mode="widthFix"></image>
+    </view>
+    <!-- 三个按钮 -->
+    <view class="threeBtn">
+      <image src="../images/gzgzh.png" bindtap="click" data-index="1"></image>
+    </view>
+    <view class="{{isShow?'meng':'hide'}}" >
+    </view>
+    <view class="{{isShow?'white':'hide'}}">
+      <image src="../images/wxgzh.png" style="width:330rpx;height:330rpx;"></image>
+      <view class="text">扫码关注微信公众号</view>
+      <image src="../images/shanchukuang.png" class="del" bindtap="delBtn"></image>
+    </view>
+  </view>
+</template>
+
+<script>
+  import { createPage } from '@mpxjs/core'
+  import store from '../store/general.js'
+  import Http from '../api/http.js'
+  createPage({
+    data:{
+      isShow:false,
+      isShowPhoto:false,
+      current:Number
+    },
+    methods: {
+      click(){
+        this.isShow=true
+        this.isShowPhoto=true
+      },
+      delBtn(){
+        this.isShow=false
+        this.isShowPhoto=false
+        console.log(5455)
+      }
+    }
+  })
+</script>
+
+<style lang="less" scoped>
+.indexFixed{
+    position: fixed;
+    top:0;//top:0可不写,否则显示弹窗的同时会使底层滚动到顶部.
+    left:0;
+    bottom:50rpx;
+    right:0;
+}
+.threeBtn{
+  position: absolute;
+  right: 20rpx;
+  top:60%;
+  width: 130rpx;
+  image{
+    width: 130rpx;
+    height: 130rpx;
+    border-radius: 50%;
+  }
+}
+.hide{
+  display: none;
+}
+.meng{
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.8;
+  position: absolute;
+  background: black;
+  left:0;
+  top:0;
+}
+  .white{
+    width: 494rpx;
+    height: 510rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    right:0;
+    left: 0;
+    top: 0;
+    bottom:0;
+    margin: auto;
+    background:rgba(255,255,255,1);
+    border-radius:20rpx;
+    z-index: 999;
+    padding-top: 60rpx;
+    // padding-left: 82rpx;
+    // text-align: center;
+    image{
+      margin-bottom: 29rpx;
+    }
+    .del{
+      width: 42rpx;
+      height: 42rpx;
+      border-radius: 50%;
+      position: absolute;
+      bottom: -120rpx;
+      left: 50%;
+    }
+    .text{
+      width:299rpx;
+      height:31rpx;
+      font-size:32rpx;
+      font-family:PingFang-SC-Medium;
+      font-weight:bold;
+      color:rgba(200,158,86,1);
+      line-height:38rpx;
+    }
+    // image{
+    //   position: absolute;
+    //   left: 0;
+    //   top:0;
+    //   right:0;
+    //   bottom: 0;
+    //   margin: auto;
+    // }
+  }
+.firPic{
+  width: 100vw;
+  height:auto
+}
+.secPic{
+  width: 100vw;
+  height:auto
+}
+.thirdPic{
+  width: 100vw;
+  height:auto
+}
+</style>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+    },
+    "navigationBarTitleText": "莱莱红娘",
+    "navigationBarBackgroundColor":"#FF6F99",
+    "navigationBarTextStyle":"white"
+  }
+</script>
