@@ -3,30 +3,47 @@
   import store from './store/general.js'
   import Http from './api/http.js'
   createApp({
+    globalData:{
+      navHeight:''
+    },
     methods: {
       ...store.mapActions(['isLogin']),
     },
     computed: {
-      ...store.mapState(['isLoginData']),
+      ...store.mapState(['isLoginData','token']),
     },
     async onLaunch(){
-      // await this.isLogin()
-      const res = await Http.post({
-        url:`/check/getCheckPage`,
-        data:{
-          "keys":"checkPage"
+      // 获取导航高度
+      wx.getSystemInfo({
+        success: res => {
+          //导航高度
+          this.globalData.navHeight = res.statusBarHeight + 46;
+          console.log(4646464646,this.globalData.navHeight)
+        }, fail(err) {
+          console.log(err);
         }
       })
-      console.log(88888,res.data.rows)
-      if(res.data.rows=="0"){
-        wx.reLaunch({
-          url: '../pages/shenhe'
-        })
-      }else{
-        wx.reLaunch({
-          url: '../pages/login'
-        })
-      }
+      // if(res.data.rows=="0"){
+      //   wx.reLaunch({
+      //     url: '../pages/shenhe'
+      //   })
+      // }else{
+      //   wx.reLaunch({
+      //     url: '../pages/login'
+      //   })
+      // }
+      // 判断token是否存在 决定进入首页还是登陆页面
+      // if(store.state.token==''){
+      //   wx.reLaunch({
+      //     url: './pages/login'
+      //   })
+      //   console.log("是空的哟")
+      // }else{
+      //   wx.reLaunch({
+      //     url: './pages/index'
+      //   })
+      //   console.log("不是空哟")
+      // }
     }
   })
 </script>
@@ -38,11 +55,10 @@
 
 <script type="application/json">
   {
-    "pages": [
-      
+    "pages": [  
+      "./pages/index",
       "./pages/shenhe",
       "./pages/login",
-      "./pages/index",
       "./pages/agree",
       "./pages/register",
       "./pages/myMoney",
@@ -58,8 +74,8 @@
       "./pages/myCustom"
     ],
      "window": {
-      "navigationBarBackgroundColor": "#ffffff",
-      "navigationBarTextStyle": "black",
+      "navigationBarBackgroundColor": "#FF6B79",
+      "navigationBarTextStyle": "white",
       "navigationBarTitleText": "莱莱红娘",
       "backgroundColor": "#eeeeee",
       "backgroundTextStyle": "light"

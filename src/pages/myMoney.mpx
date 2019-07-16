@@ -4,7 +4,7 @@
     <view class="money">
       <!-- 左边 -->
       <view class="text">
-        <view class="have">佣金总额:<text style="color:#FF8E1F;">{{myMoneyData.brokerageAmountSum?myMoneyData.brokerageAmountSum:0}}元</text></view>
+        <view class="have">佣金总额:<text style="color:#FF8E1F;">{{personInData.brokerageAmountSum?personInData.brokerageAmountSum:0}}元</text></view>
         <view class="had">可提现总额:<text style="color:#FF6B79;">{{myMoneyData.canAmount?myMoneyData.canAmount:0}}元</text></view>
         <view class="all">已提现总额:<text>{{myMoneyData.aleryAmountSum?myMoneyData.aleryAmountSum:0}}元</text></view>
       </view>
@@ -54,11 +54,13 @@
       }
     },
     computed: {
-      ...store.mapState(['cashList','myMoneyData','hyMoney'])
+      ...store.mapState(['cashList','myMoneyData','hyMoney','personInData'])
     },
     onLoad () {
       this.getInfo()
       this.getInfoHy()
+      // 根据id查看个人信息
+      // this.getPersonData()
     }
   })
 </script>

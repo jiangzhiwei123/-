@@ -3,7 +3,7 @@
     <view class="box">
       <view class="item">
         <view>姓名</view>
-        <input type="text" value="{{cashList.nickName}}" style="text-align:right;" bindblur="upnewName" />
+        <input type="text" value="{{cashList.nickName}}" style="text-align:right;" bindblur="upnewName" placeholder="请输入姓名"/>
         <!-- <view>{{cashList.nickName}}</view> -->
       </view>
       <!-- 现居地 -->
@@ -17,7 +17,7 @@
       </view>
       <view class="item">
         <view>手机号</view>
-        <input type="text" value="{{cashList.matchmakerTel}}" style="text-align:right;" bindblur="upnewTel" />
+        <input type="text" value="{{cashList.matchmakerTel}}" style="text-align:right;" bindblur="upnewTel" placeholder="请输入手机号"/>
         <!-- <view>{{cashList.matchmakerTel}}</view> -->
       </view>
       <view class="item" style="margin:16rpx 0;">

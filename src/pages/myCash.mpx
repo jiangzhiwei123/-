@@ -99,7 +99,7 @@
 <style lang="less" scoped>
   .cashPage{
     width: 750rpx;
-    height: 1206rpx;
+    height: 100vh;
     padding: 23rpx 32rpx;
     background: white;
     .take{

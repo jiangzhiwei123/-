@@ -1,5 +1,5 @@
 <template>
-  <view class="indexPage" style="height:{{thisHeight}}px;">
+  <view class="indexPage" style="height:{{thisHeight}}px;margin-top:-1rpx;">
     <!-- banner部分 -->
     <view class="bgPic" style="padding-top:50rpx;text-align:center;">
       <view class="con" >
@@ -149,6 +149,16 @@
       }
     },
     async onLoad(){
+      // 判断用户是否登陆过
+      console.log(wx.getStorageSync('token'))
+      console.log(store.state.token)
+      if(store.state.token==''){
+         wx.reLaunch({
+          url: '../pages/login'
+        })
+      }else{
+        console.log("zzzzz")
+      }
       this.getInformation()
       // 分销金额
       this.getInfo()

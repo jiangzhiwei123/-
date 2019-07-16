@@ -1,0 +1,56 @@
+<template>
+  <view class="navbar" style='height:{{navH}}px;background:#FF6F9B;width:100%;line-height:{{navH}}px;'>
+    {{content}}
+  </view>
+</template>
+
+<script>
+  import { createComponent } from '@mpxjs/core'
+  import store from '../store/general.js'
+  import Http from '../api/http.js'
+  const App = getApp()
+  createComponent({
+    data:{
+      navH:Number,
+      content:'登陆'
+    },
+    methods: {
+      ...store.mapActions(['isLogin'])
+    },
+    async created(){
+      this.navH=App.globalData.navHeight
+      console.log(88888888888888888,getApp().globalData.navHeight)
+      const res = await Http.post({
+        url:`/check/getCheckPage`,
+        data:{
+          "keys":"checkPage"
+        }
+      })
+      if(res.data.rows==0){
+        this.content='莱莱红娘'
+      }else if(res.data.rows==1){
+        this.content='登陆'
+      }
+      console.log(44444,res)
+    }
+  })
+</script>
+
+
+<style lang="stylus">
+  .navbar{
+    text-align center;
+    width:69rpx;
+    font-size:36rpx;
+    font-family:PingFangSC-Medium;
+    font-weight:500;
+    color:rgba(255,255,255,1);
+    padding-top 20rpx;
+  }
+</style>
+
+<script type="application/json">
+  {
+    "component": true
+  }
+</script>

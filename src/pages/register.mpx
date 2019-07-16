@@ -5,7 +5,7 @@
     <view class="content">
       <!-- 输入手机号部分 -->
        <view class="line">
-         <input type="text" placeholder="请输入手机号" placeholder-style="color:#333;" bindinput="getPhone"/>
+         <input type="number" placeholder="请输入手机号" placeholder-style="color:#333;" bindinput="getPhone"/>
        </view>
        <!-- 输入验证码部分 -->
        <view class="line" style="display:flex;justify-content:space-between;">
