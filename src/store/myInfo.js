@@ -246,28 +246,27 @@ import store from './general';
       commit('updateOpenid',JSON.parse(res.data.rows).openid)
       console.log(44444444444444444455555555,JSON.parse(res.data.rows).openid)
     },
-    // 获取openid
-    async isLogin({commit,state}){
-      const res = await Http.post({
-        url:`/check/getCheckPage`,
-        data:{
-          "keys":"checkPage"
-        }
-      })
-      commit('updateLogin',res.data.rows)
-      // if(res.data.rows!=0){
-      //   wx.reLaunch({
-      //     url: '../pages/login'
-      //   })
-      // }else{
-      //   wx.reLaunch({
-      //     url: '../pages/shenhe'
-      //   })
-      // }
-      commit('updateLogin',res.data.rows)
-      console.log(44444444444444444455555555,res)
-      console.log(44444444444444444455555555,state.isLoginData)
-    }
+    // async isLogin({commit,state}){
+    //   const res = await Http.post({
+    //     url:`/check/getCheckPage`,
+    //     data:{
+    //       "keys":"checkPage"
+    //     }
+    //   })
+    //   commit('updateLogin',res.data.rows)
+    //   // if(res.data.rows!=0){
+    //   //   wx.reLaunch({
+    //   //     url: '../pages/login'
+    //   //   })
+    //   // }else{
+    //   //   wx.reLaunch({
+    //   //     url: '../pages/shenhe'
+    //   //   })
+    //   // }
+    //   commit('updateLogin',res.data.rows)
+    //   console.log(44444444444444444455555555,res)
+    //   console.log(44444444444444444455555555,state.isLoginData)
+    // }
     // async getCodeStore(context,tel){
     //   const res = await Http.get({
     //     url : `/sms/send/${tel}/0`,

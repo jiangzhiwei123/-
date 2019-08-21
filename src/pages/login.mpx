@@ -1,26 +1,7 @@
 <template>
   <view class="loginPage {{isShowPhoto?'indexFixed':''}}" style="height:100vh;">
-    <nav></nav>
-    <view class="verify" wx:if="{{canShow==0}}">
-      <!-- <view class="loginPage {{isShowPhoto?'indexFixed':''}}" style="height:{{thisHeight}}px;"> -->
-          <image class="firPic" src="https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/xcx_intro_1.jpg" mode="widthFix"></image>
-          <image class="secPic" src="https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/xcx_intro_2.jpg"  mode="widthFix"></image>
-          <image class="thirdPic" src="https://llhl-hunlian.oss-cn-hangzhou.aliyuncs.com/assets/wxxcx/xcx_intro_3.jpg" mode="widthFix"></image>
-        <!-- 三个按钮 -->
-        <view class="threeBtn">
-          <image src="../images/gzgzh.png" bindtap="click" data-index="1"></image>
-        </view>
-        <view class="{{isShow?'meng':'hide'}}" >
-        </view>
-        <view class="{{isShow?'white':'hide'}}">
-          <image src="../images/wxgzh.png" style="width:330rpx;height:330rpx;"></image>
-          <view class="text">扫码关注微信公众号</view>
-          <image src="../images/shanchukuang.png" class="del" bindtap="delBtn"></image>
-        </view>
-      </view>
-    <!-- </view> -->
     <!-- 表单 -->
-    <view wx:if="{{canShow==1}}" class="bgBanner" style="height:90vh;">
+    <view class="bgBanner">
         <!-- 莱莱红娘 -->
       <view class="title">莱莱红娘</view>
       <view class="content">
@@ -32,13 +13,15 @@
         <view class="line" style="display:flex;justify-content:space-between;margin-bottom:42rpx;">
           <input type="text" placeholder="请输入密码"  bindinput='getPassword' wx:if="{{isLook}}" value="{{passwordValue}}" placeholder-style="color:#333;" />
           <input type="password" placeholder="请输入密码"  bindinput='getPassword' wx:if="{{!isLook}}"  value="{{passwordValue}}" placeholder-style="color:#333;" />
-          <image src="../images/canSee.png" style="width:56rpx;height:56rpx;" bindtap="changeLook"></image>
+          <image src="../images/canSee.png" style="width:56rpx;height:56rpx;" bindtap="changeLook" wx:if="{{!isLook}}"></image>
+          <!-- 可视 -->
+          <image src="../images/px_bukeshi.png" style="width:44rpx;height:22rpx;margin:17rpx 0;vertical-align:middle;" bindtap="changeLook" wx:if="{{isLook}}"></image>
         </view>
         <!-- 注册按钮 -->
         <button class="logBtn btnStyle" style="margin-bottom:23rpx;line-height:88rpx;" bindtap="toLogin">登录</button>
         <!-- 忘记密码立即注册按钮 -->
         <view class="twoBtn" style="display:flex;margin-top:32rpx;">
-          <button class="btnStyle" style="width:216rpx;margin-right:117rpx;">忘记密码?</button>
+          <button class="btnStyle" bindtap="forgetMM" style="width:216rpx;margin-right:117rpx;">忘记密码?</button>
           <button class="btnStyle" style="width:216rpx;" bindtap="jumpRegister">立即注册</button>
         </view>
         <!-- 绑定微信 -->
@@ -83,6 +66,7 @@
       ...store.mapState(['isLoginData']),
     },
     methods: {
+      ...store.mapMutations(['updatecode']),
       click(){
         this.isShow=true
         this.isShowPhoto=true
@@ -101,22 +85,32 @@
       })
       },
       ...store.mapActions(['loginEvent','getOpenid','isLogin']),
-      // 登录
+      // 登录 这里是登录的内容
       toLogin(){
         wx.login({
         success: res => {
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
           console.log(444444444,res)
+          this.updatecode(res.code)
+          wx.setStorageSync('code', res.code)
           this.loginEvent({username:this.phone,password:this.password.toLowerCase(),code:res.code})
-          this.getOpenid({jscode:res.code})
+          // 下面注释掉的话  后面绑定没问题  部注释掉 绑定报错
+          // this.getOpenid({jscode:res.code})
           console.log("有没有运行到我这里")
         }
       })
         
       },
+
       // 改变密码的查看状态
       changeLook(){
         this.isLook = !this.isLook
+      },
+      // 忘记密码立即注册按钮
+      forgetMM(){
+        wx.navigateTo({
+          url: './forgot'
+        })
       },
       jumpRegister(){
         console.log(132132)
@@ -138,17 +132,6 @@
     async onLoad () {
       // 判断是否审核
       wx.showLoading({title:'加载中'});
-      const res = await Http.post({
-        url:`/check/getCheckPage`,
-        data:{
-          "keys":"checkPage"
-        }
-      })
-      if(res.data.rows==1){
-        this.canShow=1
-      }else{
-        this.canShow=0
-      }
       wx.hideLoading()
        this.bannerHeight = getApp().globalData.navHeight
       console.log(999999,getApp().globalData.navHeight)
@@ -272,15 +255,12 @@
     background: url("../images/icon_wechat.png") 0 0 no-repeat;
     background-size: 100% 100%;
 }
-.bgBanner{
-  background: url("../images/icon_register_bg.png") 0 0 no-repeat;
-  background-size: 100% 100%;
-  height: auto;
-}
   .loginPage{
     width: 750rpx;
     // height: 1258rpx;
-    
+    background: url("../images/icon_register_bg.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+    height: auto;
     // padding-top: 19rpx;
     .title{
       margin: 0 auto;
@@ -345,11 +325,9 @@
 <script type="application/json">
   {
     "usingComponents": {
-      "nav":"../components/nav"
     },
     "navigationBarTitleText": "登录",
     "navigationBarBackgroundColor":"#FF6F99",
-    "navigationBarTextStyle":"white",
-    "navigationStyle":"custom"
+    "navigationBarTextStyle":"white"
   }
 </script>

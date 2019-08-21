@@ -11,9 +11,29 @@ const state={
   // 红娘电话
   hnTel:'',
   // 红娘微信
-  hnWx:''
+  hnWx:'',
+  BDCode:'',
+  // 是否绑定成功的状态
+  isBind:'',
+  // 更新unionid
+  unionData:'',
+  OpenData:''
 }
 const mutations= {
+  updateUn(state,t){
+    state.OpenData=t
+    wx.setStorageSync("oId",t)
+  },
+  updateOpen(state,t){
+    state.unionData=t
+    wx.setStorageSync("uId",t)
+  },
+  updateBind(state,t){
+    state.isBind=t
+  },
+  updatecode(state,t){
+    state.BDCode=t
+  },
   // 更新红娘姓名
   upName(state,t){
     state.hnName = t
@@ -77,6 +97,55 @@ const actions = {
       })
     } 
   },
+  // http://localhost:8082/xcx/matcher//bindMember
+  // 绑定手机号"openId": "xxx",
+  async bindNumber({commit} ,{openId,code,userName,unionId,wechatLogo,nickName}){
+    const res = await Http.post({
+      url : `/xcx/matcher/bindMember`,
+      data:{
+        openId,
+        code,
+        userName,
+        unionId,
+        wechatLogo,
+        nickName
+      }
+    })
+    if(res.data.rows.authorize){
+      console.log("你爸爸的")
+      commit('updateBind',res.data.rows.authorize)
+    }
+      console.log(88866666,res)
+  },
+  // 用户根据openid登录
+  async loginEventSec({commit} ,openId){
+    const res = await Http.post({
+      // http://localhost:8082
+      url : `/xcx/matcher/loginByOpendId`,
+      data:{
+          "openId":openId
+      }
+    })
+      console.log(51515151,res)
+  },
+  // 获取unionid
+  async getUnionid({commit,state} ,{code,encryptedData,iv}){
+    const res = await Http.post({
+      // http://localhost:8082
+      url : `/xcx/matcher/getXcxOpenId`,
+      data:{
+          code,
+          encryptedData,
+          iv
+      }
+    })
+    await commit('updateUn',res.data.rows.unionId)
+    await commit('updateOpen',res.data.rows.openId)
+    console.log(777744444777,res)
+    console.log(777744444777,state.unionData)
+    console.log(777744444777,state.OpenData)
+    console.log(777744444777,res.data.rows.openId)
+  },
   // 保存用户信息
   async getCodeStore(context,tel){
     const res = await Http.get({
@@ -89,9 +158,6 @@ const actions = {
     const res = await Http.post({
       // url: `/saveunderlinember/${name}&${sex}&${birthday}&${idNumber}&${phone}&${qqNumber}&${wehcart}&${monthlyIncomde}&${height}&${educational}`
       url: `/matchmaker/saveunderlinember`,
-      // header: {
-      //   'content-type': 'application/x-www-form-urlencoded'
-      // },
       data: {
         name,
         sex,

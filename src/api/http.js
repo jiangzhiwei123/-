@@ -27,16 +27,16 @@ mpx.xfetch.interceptors.request.use(function (config) {
   return config
 })
 // 请求响应结束
-  mpx.xfetch.interceptors.response.use(function(res) {
-    console.log(res)
-    // 也可以返回promise
-    if (res.data.code === '0003') {
-      // wx.showToast({ title: '未知错误', icon: 'none' })
-      wx.reLaunch({ url: '../pages/login' })
-      return
-    }
-    return res
-  })
+  // mpx.xfetch.interceptors.response.use(function(res) {
+  //   console.log(res)
+  //   // 也可以返回promise
+  //   if (res.data.code === '0003') {
+  //     // wx.showToast({ title: '未知错误', icon: 'none' })
+  //     wx.reLaunch({ url: '../pages/login' })
+  //     return
+  //   }
+  //   return res
+  // })
 
 export default class Http {
   static async request(method = 'GET', url, header = {}, data = {}) {

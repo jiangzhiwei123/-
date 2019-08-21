@@ -71,6 +71,7 @@
       "./pages/myTeam",
       "./pages/taskTeam",
       "./pages/cropper",
+      "./pages/forgot",
       "./pages/myCustom"
     ],
      "window": {

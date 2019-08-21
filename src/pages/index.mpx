@@ -82,7 +82,7 @@
       ...store.mapState(['cashList','totle','myMoneyData','customData','num','totle','personInData','openIdData']),
     },
     methods: {
-      ...store.mapActions(['getInformation','getCustom','getInfo','getPersonData']),
+      ...store.mapActions(['getInformation','getCustom','getInfo','getPersonData','getOpenid','loginEventSec']),
       ...store.mapMutations(['updateAll','updateAll']),
       // 上传头像
       // upImg(){
@@ -149,6 +149,18 @@
       }
     },
     async onLoad(){
+      // 判断用户是否绑定
+    //  wx.login({
+    //     success: res => {
+    //       // 发送 res.code 到后台换取 openId, sessionKey, unionId
+    //       console.log(444444444,res)
+    //       this.getOpenid({jscode:res.code}).then(
+    //         console.log("你是不是傻")
+    //       )
+    //        this.loginEventSec(this.openIdData)
+    //       console.log("有没有运行到我这里")
+    //     }
+    //   })
       // 判断用户是否登陆过
       console.log(wx.getStorageSync('token'))
       console.log(store.state.token)

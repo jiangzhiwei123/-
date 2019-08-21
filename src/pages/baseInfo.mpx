@@ -17,17 +17,25 @@
       </view>
       <view class="item">
         <view>手机号</view>
-        <input type="text" value="{{cashList.matchmakerTel}}" style="text-align:right;" bindblur="upnewTel" placeholder="请输入手机号"/>
+        <input type="text" value="{{cashList.matchmakerTel}}" style="text-align:right;" bindblur="upnewTel" placeholder="请输入微信号"/>
         <!-- <view>{{cashList.matchmakerTel}}</view> -->
       </view>
-      <view class="item" style="margin:16rpx 0;">
-        <view>绑定微信</view>
-        <input type="text" value="{{cashList.wechartAccount?cashList.wechartAccount:'未绑定'}}" style="text-align:right;" bindblur="upnewWx" />
-        <!-- <view>{{cashList.wechartAccount?cashList.wechartAccount:'未绑定'}}</view> -->
+      <view class="item">
+        <view>微信号</view>
+        <input type="text" value="{{cashList.wechartAccount}}" style="text-align:right;" bindblur="upnewTel" placeholder="请输入微信号"/>
+        <!-- <view>{{cashList.matchmakerTel}}</view> -->
       </view>
+      <button class="item" style="margin:16rpx 0;padding-right:20rpx;border:none;border-radius:0;line-height:60rpx;" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="onGotUserInfo">
+        <!-- <button open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="onGotUserInfo">绑定微信</button> -->
+        <view bindtap="ccc" style="flex:1;text-align:left;">绑定微信</view>
+        <!-- <input type="text" value="{{cashList.wechartAccount?cashList.wechartAccount:'未绑定'}}" style="text-align:right;" bindblur="upnewWx" /> -->
+        <view>{{cashList.authorize?cashList.username:'未绑定'}}</view>
+        <image src="../images/icon_more.png" style="width:32rpx;height:32rpx;background:100% 100%;"></image>
+        <!-- <view>{{cashList.wechartAccount?cashList.wechartAccount:'未绑定'}}</view> -->
+      </button>
       <!-- 分享给好友 -->
-      <view class="item" style="margin:16rpx 0;">
-        <view>分享给好友,获取分佣吧</view>
+      <view class="item">
+        <view bindtap="abcdef">分享给好友,获取分佣吧</view>
       </view>
       <!-- 分享部分 -->
       <!-- 莱莱婚恋端 -->
@@ -69,7 +77,6 @@
         <!-- 叉掉的按钮 -->
         <image src="../images/icon_cloose.png" style="width:64rpx;height:64rpx;" class="del" bindtap="delPic"></image>
       </view>
-
     </view>
   </view>
 </template>
@@ -101,6 +108,8 @@
       tempFilePath2:'',
     },
     async onLoad () {
+      console.log(777744444777,this.unionData)
+      console.log(777744444777,this.OpenData)
       this.getInformation()
       this.date = (this.cashList.province+this.cashList.city).replace("省",'').replace("市",'')
       var _this =this
@@ -115,10 +124,10 @@
       console.log("我是onload的时候打印的呀")
     },
     computed: {
-      ...store.mapState(['cashList','hnName','hnTel','hnWx']),
+      ...store.mapState(['cashList','hnName','hnTel','hnWx','BDCode','token','openIdData','isBind','OpenData','unionData']),
     },
     methods: {
-      ...store.mapMutations(['upName','upTel','upWx']),
+      ...store.mapMutations(['upName','upTel','upWx','updatecode']),
       // 更新名字
       upnewName(e){
         console.log(5555555555559999999999,e.detail.value)
@@ -135,6 +144,31 @@
         this.upWx(e.detail.value)
         this.updateHn({nickName:this.hnName==''?this.cashList.nickName:this.hnName,matchmakerTel:this.hnTel==''?this.cashList.matchmakerTel:this.hnTel,wechartAccount:this.hnWx==''?this.cashList.wechartAccount:this.hnWx,province:this.date[0],city:this.date[1]})
       },
+      // 这里是绑定的部分的内容
+      onGotUserInfo() {
+        var _this=this
+            wx.getUserInfo({     
+                success: function(e) {      
+                  var userInfo = e.userInfo    
+                  // 获取unionId
+                  console.log(e)
+                  _this.getUnionid({code:wx.getStorageSync('code'),encryptedData:e.encryptedData,iv:e.iv}).then(
+                     _this.bindNumber({openId:wx.getStorageSync('oId'),code:wx.getStorageSync('code'),userName:userInfo.nickName,unionId:wx.getStorageSync('uId'),wechatLogo:userInfo.avatarUrl,nickName:userInfo.nickName})
+                  )
+                  // .then(
+                  //   _this.bindNumber({openId:wx.getStorageSync('oId'),code:wx.getStorageSync('code'),userName:userInfo.nickName,unionId:wx.getStorageSync('uId'),wechatLogo:userInfo.avatarUrl,nickName:userInfo.nickName})
+                  //   _this.bindNumber({openId:_this.OpenData})
+                  // ).then(
+                  //     _this.getInformation()
+                  // )
+                  
+                }
+            })
+             
+      },
+      abcdef(){
+        this.bindNumber({openId:wx.getStorageSync('oId'),code:wx.getStorageSync('code'),unionId:wx.getStorageSync('uId')})
+      },
       // // 更新手机
       // upTel(e){
       //   console.log(e)
@@ -145,7 +179,7 @@
       //   console.log(e)
       //   this.upWx(e.detail.value)
       // },
-      ...store.mapActions(['getInformation','updateHn']),
+      ...store.mapActions(['getInformation','updateHn','loginEventSec','getOpenid','bindNumber','getUnionid']),
       // 关闭图片
       delPic(){
         this.isShare = false
