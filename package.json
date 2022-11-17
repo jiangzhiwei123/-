@@ -17,7 +17,7 @@
     "@mpxjs/fetch": "^2.0.12"
   },
   "devDependencies": {
-    "@mpxjs/webpack-plugin": "^2.0.0",
+    "@mpxjs/webpack-plugin": "^2.8.7",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -40,7 +40,7 @@
     "url-loader": "^1.0.1",
     "webpack": "^4.16.1",
     "webpack-bundle-analyzer": "^3.3.2",
-    "webpack-cli": "^3.1.0",
+    "webpack-cli": "^3.3.12",
     "webpack-merge": "^4.1.2"
   }
 }
